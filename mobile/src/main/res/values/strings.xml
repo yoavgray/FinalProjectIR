@@ -9,5 +9,7 @@
     <string name="title_activity_device">DeviceActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="title_activity_remote_control">RemoteControlActivity</string>
+    <string name="title_activity_tvremote_control">TVRemoteControlActivity</string>
+    <string name="title_activity_acremote_control">ACRemoteControlActivity</string>
 
 </resources>

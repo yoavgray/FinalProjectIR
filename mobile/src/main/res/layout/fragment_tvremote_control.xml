@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent" android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.bgu.project.finalprojectir.DeviceActivity$PlaceholderFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:id="@+id/textViewLeaveRemainingDescription"
+        android:text="TV Remote Control"
+        android:textSize="20dp"
+        android:layout_height="wrap_content"
+        android:paddingBottom="5dp"
+        android:textStyle="bold"
+        android:layout_gravity="center_horizontal" />
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="0,1,2">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/powerImageButton"
+                android:src="@drawable/rc_power_ic"
+                android:layout_height="70dp"
+                android:layout_width="80dp"
+                android:scaleType="fitCenter"
+                android:onClick="onClick"
+                android:adjustViewBounds="true" />
+
+            <ImageButton
+                android:id="@+id/muteImageButton"
+                android:src="@drawable/rc_mute_ic"
+                android:layout_height="70dp"
+                android:layout_width="80dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_column="2" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <ImageButton
+                android:id="@+id/volumeUpImageButton"
+                android:src="@drawable/rc_vol_up_ic"
+                android:layout_height="70dp"
+                android:layout_width="80dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_gravity="right"/>
+
+            <TextView
+                android:text="Volume"
+                android:textSize="25dip"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                />
+
+            <ImageButton
+                android:id="@+id/volumeDownImageButton"
+                android:src="@drawable/rc_vol_down_ic"
+                android:layout_height="70dp"
+                android:layout_width="80dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_gravity="left"/>
+        </TableRow>
+
+        <TableRow>
+
+            <ImageButton
+                android:id="@+id/channelUpImageButton"
+                android:src="@drawable/rc_plus_ic"
+                android:layout_height="70dp"
+                android:layout_width="80dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_gravity="right"/>
+
+            <TextView
+                android:text="Channel"
+                android:textSize="25dip"
+                android:layout_gravity="center"
+                android:textStyle="bold"
+                />
+
+            <ImageButton
+                android:id="@+id/channelDownImageButton"
+                android:src="@drawable/rc_minus_ic"
+                android:layout_height="70dp"
+                android:layout_width="80dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_gravity="left"/>
+        </TableRow>
+
+    </TableLayout>
+
+    <TableLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="10dp"
+        android:stretchColumns="0,1,2">
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/no1ImageButton"
+                android:src="@drawable/rc_1_ic"
+                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_gravity="right" />
+            <ImageButton
+                android:id="@+id/no2ImageButton"
+                android:src="@drawable/rc_2_ic"
+                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_gravity="center" />
+            <ImageButton
+                android:id="@+id/no3ImageButton"
+                android:src="@drawable/rc_3_ic"
+                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_gravity="left" />
+
+        </TableRow>
+
+        <TableRow>
+
+            <ImageButton
+                android:id="@+id/no4ImageButton"
+                android:src="@drawable/rc_4_ic"
+                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_gravity="right" />
+            <ImageButton
+                android:id="@+id/no5ImageButton"
+                android:src="@drawable/rc_5_ic"
+                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_gravity="center" />
+            <ImageButton
+                android:id="@+id/no6ImageButton"
+                android:src="@drawable/rc_6_ic"
+                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_gravity="left" />
+
+        </TableRow>
+        <TableRow>
+
+            <ImageButton
+                android:id="@+id/no7ImageButton"
+                android:src="@drawable/rc_7_ic"
+                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_gravity="right" />
+            <ImageButton
+                android:id="@+id/no8ImageButton"
+                android:src="@drawable/rc_8_ic"
+                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_gravity="center" />
+            <ImageButton
+                android:id="@+id/no9ImageButton"
+                android:src="@drawable/rc_9_ic"
+                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:onClick="onClick"
+                android:layout_gravity="left" />
+        </TableRow>
+
+        <TableRow>
+
+            <ImageButton
+                android:id="@+id/no0ImageButton"
+                android:src="@drawable/rc_0_ic"
+                android:layout_height="60dp"
+                android:layout_width="70dp"
+                android:scaleType="fitCenter"
+                android:adjustViewBounds="true"
+                android:layout_gravity="center"
+                android:onClick="onClick"
+                android:layout_column="1" />
+        </TableRow>
+    </TableLayout>
+
+    </LinearLayout>

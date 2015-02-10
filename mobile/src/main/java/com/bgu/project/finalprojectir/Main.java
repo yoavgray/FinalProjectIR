@@ -55,20 +55,9 @@ public class Main extends ActionBarActivity {
         // Adding notifications - Eventually for the Watch
         int notificationId = 001;
 // Build intent for notification content
-        Intent viewIntent = new Intent(this, RemoteControlActivity.class);
+        Intent viewIntent = new Intent(this, TVRemoteControlActivity.class);
         PendingIntent viewPendingIntent =
                 PendingIntent.getActivity(this, 0, viewIntent, 0);
-
-        // Create a WearableExtender to add functionality for wearables
-        NotificationCompat.WearableExtender wearableExtender =
-                new NotificationCompat.WearableExtender()
-                        .setHintHideIcon(true);
-
-
-        // Specify the 'big view' content to display the long
-// event description that may not fit the normal content text.
-        NotificationCompat.BigTextStyle bigStyle = new NotificationCompat.BigTextStyle();
-        bigStyle.bigText("Adisu Ben Nisu Ben Agabubu");
 
         // Build an intent for an action to view a map
         Intent mapIntent = new Intent(Intent.ACTION_VIEW);
@@ -79,16 +68,12 @@ public class Main extends ActionBarActivity {
 
         Notification notificationBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.ic_action_location_found)
+                        .setSmallIcon(R.drawable.bgu_logo)
                         .setLargeIcon(BitmapFactory.decodeResource(
-                                getResources(), R.drawable.adisu_icon))
-                        .setContentTitle("Adisu Bisu")
-                        .setContentText("Kaki")
+                                getResources(), R.drawable.yoav_icon))
+                        .setContentTitle("Arduino Detected!")
+                        .setContentText("Gray's Arduino")
                         .setContentIntent(viewPendingIntent)
-                        .addAction(R.drawable.asi_icon,
-                                "Click Asi", mapPendingIntent)
-                        .setStyle(bigStyle)
-                        .extend(wearableExtender)
                         .build();
 
 // Get an instance of the NotificationManager service

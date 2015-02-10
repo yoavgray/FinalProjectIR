@@ -16,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 public class DeviceActivity extends ActionBarActivity {
@@ -104,11 +105,26 @@ public class DeviceActivity extends ActionBarActivity {
             listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 public void onItemClick(AdapterView<?> arg0, View myView, int pos,
                                         long arg3) {
-                    Intent intent = new Intent(getActivity(),
-                            RemoteControlActivity.class)
-                            .putExtra("devicePropertyName", listItem_data[pos].title)
-                            .putExtra("image", listItem_data[pos].icon);
-                    startActivity(intent);
+                    Intent intent;
+                    switch (pos) {
+                        case 0:
+                            intent = new Intent(getActivity(),
+                                    ACRemoteControlActivity.class);
+                            startActivity(intent);
+                            break;
+                        case 1:
+                            intent = new Intent(getActivity(),
+                                    TVRemoteControlActivity.class);
+                            startActivity(intent);
+                            break;
+                        case 2:
+                            Toast.makeText(getActivity(),"Water Heater is not implemented yet",Toast.LENGTH_SHORT).show();
+                            break;
+                        case 3:
+                            Toast.makeText(getActivity(),"Raspberry Pi is not implemented yet",Toast.LENGTH_SHORT).show();
+                            break;
+                    }
+
 
                 }
             });
