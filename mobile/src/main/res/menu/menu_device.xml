@@ -4,4 +4,8 @@
     tools:context="com.bgu.project.finalprojectir.DeviceActivity">
     <item android:id="@+id/action_settings" android:title="@string/action_settings"
         android:orderInCategory="100" app:showAsAction="never" />
+    <item android:id="@+id/add_device"
+        android:icon="@drawable/ic_add"
+        android:title="@string/action_add_device"
+        app:showAsAction="always" />
 </menu>

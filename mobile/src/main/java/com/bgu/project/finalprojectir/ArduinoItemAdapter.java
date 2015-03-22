@@ -8,18 +8,22 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-    /**
+import com.bgu.project.finalprojectir.classes.Arduino;
+
+import java.util.List;
+
+/**
      * This class represents a custom view to be held in the list including a name and an image
      * @author yoav
      *
      */
-    public class ListItemAdapter extends ArrayAdapter<ListItem> {
+    public class ArduinoItemAdapter extends ArrayAdapter<Arduino> {
 
         Context context;
         int layoutResourceId;
-        ListItem data[] = null;
+        List<Arduino> data = null;
 
-        public ListItemAdapter(Context context, int layoutResourceId, ListItem[] data) {
+        public ArduinoItemAdapter(Context context, int layoutResourceId, List<Arduino> data) {
             super(context, layoutResourceId, data);
             this.layoutResourceId = layoutResourceId;
             this.context = context;
@@ -29,7 +33,7 @@ import android.widget.TextView;
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View row = convertView;
-            ItemHolder holder = null;
+            ItemHolder holder;
 
             if(row == null)
             {
@@ -38,7 +42,8 @@ import android.widget.TextView;
 
                 holder = new ItemHolder();
                 holder.imgIcon = (ImageView)row.findViewById(R.id.imgIcon);
-                holder.txtTitle = (TextView)row.findViewById(R.id.txtTitle);
+                holder.txtBigTitle = (TextView)row.findViewById(R.id.txtBigTitle);
+                holder.txtSmallTitle = (TextView)row.findViewById(R.id.txtSmallTitle);
 
                 row.setTag(holder);
             }
@@ -47,8 +52,9 @@ import android.widget.TextView;
                 holder = (ItemHolder)row.getTag();
             }
 
-            ListItem listItem = data[position];
-            holder.txtTitle.setText(listItem.title);
+            Arduino listItem = data.get(position);
+            holder.txtBigTitle.setText(listItem.title);
+            holder.txtSmallTitle.setText(listItem.getIp());
             holder.imgIcon.setImageResource(listItem.icon);
 
             return row;
@@ -57,6 +63,7 @@ import android.widget.TextView;
         static class ItemHolder
         {
             ImageView imgIcon;
-            TextView txtTitle;
+            TextView txtBigTitle;
+            TextView txtSmallTitle;
         }
     }

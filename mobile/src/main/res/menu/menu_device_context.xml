@@ -1,0 +1,14 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.bgu.project.finalprojectir.DeviceActivity" >
+
+    <item
+        android:id="@+id/add_task"
+        android:title="Add Task To Device"
+        android:text="Add Task To Device"/>
+
+    <item
+        android:id="@+id/remove_device"
+        android:title="Remove Device"
+        android:text="Remove Device"/>
+</menu>

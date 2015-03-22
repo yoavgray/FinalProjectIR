@@ -1,8 +1,7 @@
 package com.bgu.project.finalprojectir;
 
-import android.app.Activity;
-import android.app.Dialog;
-import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.app.Fragment;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
@@ -11,10 +10,8 @@ import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.app.NotificationCompat.WearableExtender;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -24,38 +21,38 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import android.widget.Toast;
 
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.bgu.project.finalprojectir.classes.Arduino;
+import com.bgu.project.finalprojectir.fragments.AddArduinoFragment;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class Main extends ActionBarActivity {
     private static final int RESULT_SETTINGS = 1;
-    static ListItemAdapter adapter;
-    static ListItem[] listItem_data = null;
+    private static final int RESULT_ADD_ARDUINO = 2;
+    FragmentManager fm = getFragmentManager();
 
-    /*
-     * Define a request code to send to Google Play services
-     * This code is returned in Activity.onActivityResult
-     */
-    private final static int
-            CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+    static ArduinoItemAdapter adapter;
+    static List<Arduino> listItem_data;
+    static PlaceholderFragment mainFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .add(R.id.container, new PlaceholderFragment())
+            mainFragment = new PlaceholderFragment();
+            getFragmentManager().beginTransaction()
+                    .add(R.id.main_container, mainFragment)
                     .commit();
         }
 
         // Adding notifications - Eventually for the Watch
-        int notificationId = 001;
-// Build intent for notification content
-        Intent viewIntent = new Intent(this, TVRemoteControlActivity.class);
+        int notificationId = 1;
+        // Build intent for notification content
+        Intent viewIntent = new Intent(this, DeviceActivity.class);
         PendingIntent viewPendingIntent =
                 PendingIntent.getActivity(this, 0, viewIntent, 0);
 
@@ -76,11 +73,11 @@ public class Main extends ActionBarActivity {
                         .setContentIntent(viewPendingIntent)
                         .build();
 
-// Get an instance of the NotificationManager service
+        // Get an instance of the NotificationManager service
         NotificationManagerCompat notificationManager =
                 NotificationManagerCompat.from(this);
 
-// Build the notification and issues it with notification manager.
+        // Build the notification and issues it with notification manager.
         notificationManager.notify(notificationId, notificationBuilder);
     }
 
@@ -99,7 +96,10 @@ public class Main extends ActionBarActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         switch (item.getItemId()) {
             case R.id.add_device:
-                Toast.makeText(this,"Not implemented yet..",Toast.LENGTH_SHORT).show();
+                AddArduinoFragment aaFragment = new AddArduinoFragment();
+                // Show DialogFragment
+                aaFragment.setTargetFragment(mainFragment, RESULT_ADD_ARDUINO);
+                aaFragment.show(fm, "Dialog Fragment");
                 return true;
             case R.id.action_settings:
                 startActivityForResult(new Intent(this, SettingsActivity.class),
@@ -107,6 +107,19 @@ public class Main extends ActionBarActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        //super.onActivityResult(requestCode, resultCode, data);
+        Log.d("msg","" + requestCode);
+        switch (requestCode) {
+            case RESULT_SETTINGS:
+                SharedPreferences sharedPrefs = PreferenceManager
+                        .getDefaultSharedPreferences(this);
+                //mIsPtt = sharedPrefs.getBoolean("ptt_checkbox", true);
+                break;
         }
     }
 
@@ -119,19 +132,33 @@ public class Main extends ActionBarActivity {
         }
 
         @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            super.onActivityResult(requestCode, resultCode, data);
+            switch (requestCode) {
+                case RESULT_ADD_ARDUINO:
+                    if (resultCode == RESULT_OK) {
+                        // The user added a device
+                        String name = data.getStringExtra("nameResult");
+                        String ip = data.getStringExtra("ipResult");
+                        listItem_data.add(new Arduino(R.drawable.bgu_logo,name,ip));
+                        adapter.notifyDataSetChanged();
+                    }
+                    break;
+            }
+        }
+
+        @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            listItem_data = new ListItem[] {
-                    new ListItem(R.drawable.boaz_icon, "Buzi's Arduino"),
-                    new ListItem(R.drawable.yoav_icon, "Gray's Arduino"),
-                    new ListItem(R.drawable.asi_icon, "Asi's Arduino"),
-                    new ListItem(R.drawable.omri_icon, "Havivian's Arduino"),
-                    new ListItem(R.drawable.konsta_icon, "Konstantinopol's Arduino"),
-                    new ListItem(R.drawable.sasi_icon, "Sasilicious's Arduino") };
+            listItem_data = new ArrayList<>();
+            listItem_data.add(new Arduino(R.drawable.boaz_icon, "Buzi's Arduino", "127.0.0.1"));
+            listItem_data.add(new Arduino(R.drawable.yoav_icon, "Gray's Arduino", "127.0.0.2"));
+            listItem_data.add(new Arduino(R.drawable.asi_icon, "Asi's Arduino", "127.0.0.3"));
+            listItem_data.add(new Arduino(R.drawable.omri_icon, "Havivian's Arduino", "127.0.0.4"));
 
-            adapter = new ListItemAdapter(getActivity(),
+            adapter = new ArduinoItemAdapter(getActivity(),
                     R.layout.list_item_row, listItem_data);
 
             final ListView listView = (ListView) rootView
@@ -144,8 +171,8 @@ public class Main extends ActionBarActivity {
                                         long arg3) {
                     Intent intent = new Intent(getActivity(),
                             DeviceActivity.class)
-                            .putExtra("deviceName", listItem_data[pos].title)
-                            .putExtra("image", listItem_data[pos].icon);
+                            .putExtra("deviceName", listItem_data.get(pos).title)
+                            .putExtra("deviceIp", listItem_data.get(pos).getIp());
                     startActivity(intent);
 
                 }
@@ -155,89 +182,4 @@ public class Main extends ActionBarActivity {
         }
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        switch (requestCode) {
-            case RESULT_SETTINGS:
-                SharedPreferences sharedPrefs = PreferenceManager
-                        .getDefaultSharedPreferences(this);
-                //mIsPtt = sharedPrefs.getBoolean("ptt_checkbox", true);
-                break;
-            case CONNECTION_FAILURE_RESOLUTION_REQUEST :
-            /*
-             * If the result code is Activity.RESULT_OK, try
-             * to connect again
-             */
-                switch (resultCode) {
-                    case Activity.RESULT_OK :
-                    /*
-                     * Try the request again
-                     */
-                        break;
-                }
-                break;
-        }
-    }
-
-    // Define a DialogFragment that displays the error dialog
-    public static class ErrorDialogFragment extends DialogFragment {
-        // Global field to contain the error dialog
-        private Dialog mDialog;
-        // Default constructor. Sets the dialog field to null
-        public ErrorDialogFragment() {
-            super();
-            mDialog = null;
-        }
-
-        // Set the dialog to display
-        public void setDialog(Dialog dialog) {
-            mDialog = dialog;
-        }
-
-        // Return a Dialog to the DialogFragment.
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            return mDialog;
-        }
-    }
-
-    private boolean servicesConnected() {
-        // Check that Google Play services is available
-        int resultCode =
-                GooglePlayServicesUtil.
-                        isGooglePlayServicesAvailable(this);
-        // If Google Play services is available
-        if (ConnectionResult.SUCCESS == resultCode) {
-            // In debug mode, log the status
-            Log.d("Geofence Detection",
-                    "Google Play services is available.");
-            // Continue
-            return true;
-            // Google Play services was not available for some reason
-        } else {
-            // Get the error code
-            int errorCode = resultCode;
-            // Get the error dialog from Google Play services
-            Dialog errorDialog = GooglePlayServicesUtil.getErrorDialog(
-                    errorCode,
-                    this,
-                    CONNECTION_FAILURE_RESOLUTION_REQUEST);
-
-            // If Google Play services can provide an error dialog
-            if (errorDialog != null) {
-                // Create a new DialogFragment for the error dialog
-                ErrorDialogFragment errorFragment =
-                        new ErrorDialogFragment();
-                // Set the dialog in the DialogFragment
-                errorFragment.setDialog(errorDialog);
-                // Show the error dialog in the DialogFragment
-                errorFragment.show(
-                        getFragmentManager(),
-                        "Geofence Detection");
-            }
-            return false;
-        }
-    }
 }

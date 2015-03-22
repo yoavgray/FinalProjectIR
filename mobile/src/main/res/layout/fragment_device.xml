@@ -7,29 +7,9 @@
     android:orientation="vertical"
     tools:context="com.bgu.project.finalprojectir.DeviceActivity$PlaceholderFragment">
 
- <LinearLayout
-     android:paddingBottom="20dp"
-     android:layout_width="match_parent"
-     android:layout_height="wrap_content">
-     <ImageView
-         android:id="@+id/deviceImageView"
-         android:layout_width="50dp"
-         android:layout_height="50dp" />
-     <TextView
-         android:id="@+id/deviceNameTextView"
-         android:text="Users Arduino"
-         android:textSize="30dp"
-         android:layout_width="wrap_content"
-         android:layout_height="wrap_content"
-         android:paddingLeft="20dp"
-         android:textColor="#ffff3f47"
-         android:textStyle="bold" />
-     </LinearLayout>
-
     <ListView
         android:id="@+id/devicePropertiesListView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
 
 </LinearLayout>

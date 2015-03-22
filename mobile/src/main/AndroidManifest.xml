@@ -49,22 +49,12 @@
         </activity>
         <activity
             android:name=".DeviceActivity"
-            android:label="@string/title_activity_device" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.bgu.project.finalprojectir.Main" />
+            android:label="@string/title_activity_device">
         </activity>
+
         <activity
-            android:name=".TVRemoteControlActivity"
-            android:label="@string/title_activity_tvremote_control"
-            android:parentActivityName=".DeviceActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.bgu.project.finalprojectir.DeviceActivity" />
-        </activity>
-        <activity
-            android:name=".ACRemoteControlActivity"
-            android:label="@string/title_activity_acremote_control"
+            android:name=".AddTaskActivity"
+            android:label="@string/title_activity_add_task"
             android:parentActivityName=".DeviceActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

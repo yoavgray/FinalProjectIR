@@ -2,14 +2,32 @@
 <resources>
 
     <string name="app_name">FinalProjectIR</string>
-    <string name="title_activity_main">Main</string>
+    <string name="title_activity_main">IR Final Project</string>
     <string name="hello">Hello user, please choose device to connect:</string>
     <string name="action_settings">Settings</string>
     <string name="action_add_device">Add a device</string>
-    <string name="title_activity_device">DeviceActivity</string>
-    <string name="hello_world">Hello world!</string>
-    <string name="title_activity_remote_control">RemoteControlActivity</string>
-    <string name="title_activity_tvremote_control">TVRemoteControlActivity</string>
-    <string name="title_activity_acremote_control">ACRemoteControlActivity</string>
+    <string name="title_activity_device">Device</string>
+    <string name="device_name">Device Name:</string>
+    <string name="device_ip">Device IP:</string>
+    <string name="device_type">Device Type:</string>
+    <string name="device_task_type">Type of Task:</string>
+    <string name="title_activity_add_task">Add a task</string>
+
+
+    <string-array name="tv_array">
+        <item>Sony</item>
+        <item>Samsung</item>
+        <item>Panasonic</item>
+        <item>AKAI</item>
+        <item>Kaki</item>
+    </string-array>
+
+    <string-array name="ac_array">
+        <item>Tadiran</item>
+        <item>Tornado</item>
+    </string-array>
+
+<!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>
