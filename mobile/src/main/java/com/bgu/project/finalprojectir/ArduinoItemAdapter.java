@@ -53,9 +53,9 @@ import java.util.List;
             }
 
             Arduino listItem = data.get(position);
-            holder.txtBigTitle.setText(listItem.title);
+            holder.txtBigTitle.setText(listItem.getTitle());
             holder.txtSmallTitle.setText(listItem.getIp());
-            holder.imgIcon.setImageResource(listItem.icon);
+            holder.imgIcon.setImageResource(listItem.getIcon());
 
             return row;
         }

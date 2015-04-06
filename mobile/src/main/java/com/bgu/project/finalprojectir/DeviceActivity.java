@@ -13,7 +13,7 @@ import com.bgu.project.finalprojectir.fragments.*;
 public class DeviceActivity extends ActionBarActivity  {
     private static Intent incomingIntent;
     private static String title;
-    private static TextView deviceIp;
+    private static String deviceIp;
     static DeviceFragment deviceFragment;
     FragmentManager fm = getFragmentManager();
 
@@ -21,20 +21,26 @@ public class DeviceActivity extends ActionBarActivity  {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_device);
         deviceFragment = new DeviceFragment();
         if (savedInstanceState == null) {
-            getFragmentManager().beginTransaction()
-                    .add(R.id.container, deviceFragment)
-                    .commit();
 
             incomingIntent = getIntent();
             title = incomingIntent.getStringExtra("deviceName");
             setTitle(title);
-        }
 
-        deviceIp = (TextView) findViewById(R.id.deviceIpTextView);
-        deviceIp.setText(incomingIntent.getStringExtra("deviceIp"));
+            ((TextView) findViewById(R.id.deviceIpTextView)).setText(incomingIntent.getStringExtra("deviceIp"));
+            deviceIp = incomingIntent.getStringExtra("deviceIp");
+            Bundle bundle=new Bundle();
+            bundle.putString("ip",deviceIp);
+            deviceFragment.setArguments(bundle);
+            getFragmentManager().beginTransaction()
+                    .add(R.id.container, deviceFragment)
+                    .commit();
+        }else{
+            ((TextView) findViewById(R.id.deviceIpTextView)).setText(incomingIntent.getStringExtra("deviceIp"));
+        }
 
         //TODO: Change the Headline to the arduino name and add IP and relevant info also
     }

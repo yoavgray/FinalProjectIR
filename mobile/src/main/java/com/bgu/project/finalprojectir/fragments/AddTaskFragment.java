@@ -12,6 +12,7 @@ import android.widget.Button;
 import android.widget.RadioButton;
 
 import com.bgu.project.finalprojectir.R;
+import com.bgu.project.finalprojectir.classes.DeviceType;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -34,7 +35,7 @@ public class AddTaskFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                String type = timeRadioButton.isChecked() ? "Television" : "A/C Unit";
+                String type = timeRadioButton.isChecked() ? String.valueOf(DeviceType.TV) : String.valueOf(DeviceType.AC);
                 intent.putExtra("typeResult", type);
                 getTargetFragment().onActivityResult(
                         getTargetRequestCode(), RESULT_OK, intent);

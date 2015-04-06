@@ -13,6 +13,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.bgu.project.finalprojectir.R;
+import com.bgu.project.finalprojectir.classes.DeviceType;
 
 public class AddDeviceFragment extends DialogFragment {
     private static TextView mutagTitle;
@@ -48,7 +49,7 @@ public class AddDeviceFragment extends DialogFragment {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                String type = tvRadioButton.isChecked() ? "Television" : "A/C Unit";
+                String type = tvRadioButton.isChecked() ? String.valueOf(DeviceType.TV) : String.valueOf(DeviceType.AC);
                 String brand = spinner.getSelectedItem().toString();
                 intent.putExtra("typeResult", type).putExtra("brandResult", brand);
                 getTargetFragment().onActivityResult(

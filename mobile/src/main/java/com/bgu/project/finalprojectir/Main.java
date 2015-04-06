@@ -30,12 +30,14 @@ import java.util.List;
 
 
 public class Main extends ActionBarActivity {
+
     private static final int RESULT_SETTINGS = 1;
     private static final int RESULT_ADD_ARDUINO = 2;
+
     FragmentManager fm = getFragmentManager();
 
     static ArduinoItemAdapter adapter;
-    static List<Arduino> listItem_data;
+    static List<Arduino> itemDataList;
     static PlaceholderFragment mainFragment;
 
     @Override
@@ -78,7 +80,7 @@ public class Main extends ActionBarActivity {
                 NotificationManagerCompat.from(this);
 
         // Build the notification and issues it with notification manager.
-        notificationManager.notify(notificationId, notificationBuilder);
+//        notificationManager.notify(notificationId, notificationBuilder);
     }
 
 
@@ -140,7 +142,7 @@ public class Main extends ActionBarActivity {
                         // The user added a device
                         String name = data.getStringExtra("nameResult");
                         String ip = data.getStringExtra("ipResult");
-                        listItem_data.add(new Arduino(R.drawable.bgu_logo,name,ip));
+                        itemDataList.add(new Arduino(R.drawable.bgu_logo, name, ip));
                         adapter.notifyDataSetChanged();
                     }
                     break;
@@ -152,14 +154,14 @@ public class Main extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            listItem_data = new ArrayList<>();
-            listItem_data.add(new Arduino(R.drawable.boaz_icon, "Buzi's Arduino", "127.0.0.1"));
-            listItem_data.add(new Arduino(R.drawable.yoav_icon, "Gray's Arduino", "127.0.0.2"));
-            listItem_data.add(new Arduino(R.drawable.asi_icon, "Asi's Arduino", "127.0.0.3"));
-            listItem_data.add(new Arduino(R.drawable.omri_icon, "Havivian's Arduino", "127.0.0.4"));
+            itemDataList = new ArrayList<>();
+            itemDataList.add(new Arduino(R.drawable.boaz_icon, "Buzi's Arduino", "10.100.102.4:8080/rest"));
+            itemDataList.add(new Arduino(R.drawable.yoav_icon, "Gray's Arduino", "127.0.0.2"));
+            itemDataList.add(new Arduino(R.drawable.asi_icon, "Asi's Arduino", "127.0.0.3"));
+            itemDataList.add(new Arduino(R.drawable.omri_icon, "Havivian's Arduino", "127.0.0.4"));
 
             adapter = new ArduinoItemAdapter(getActivity(),
-                    R.layout.list_item_row, listItem_data);
+                    R.layout.list_item_row, itemDataList);
 
             final ListView listView = (ListView) rootView
                     .findViewById(R.id.devicesListView);
@@ -171,8 +173,8 @@ public class Main extends ActionBarActivity {
                                         long arg3) {
                     Intent intent = new Intent(getActivity(),
                             DeviceActivity.class)
-                            .putExtra("deviceName", listItem_data.get(pos).title)
-                            .putExtra("deviceIp", listItem_data.get(pos).getIp());
+                            .putExtra("deviceName", itemDataList.get(pos).getTitle())
+                            .putExtra("deviceIp", itemDataList.get(pos).getIp());
                     startActivity(intent);
 
                 }

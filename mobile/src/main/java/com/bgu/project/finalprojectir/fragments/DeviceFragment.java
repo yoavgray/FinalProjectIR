@@ -5,8 +5,10 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
@@ -18,9 +20,16 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import com.bgu.project.finalprojectir.DeviceItemAdapter;
+import com.bgu.project.finalprojectir.InfoFromArduino;
 import com.bgu.project.finalprojectir.R;
 import com.bgu.project.finalprojectir.classes.Device;
+import com.bgu.project.finalprojectir.classes.DeviceType;
 
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestTemplate;
+
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,11 +37,14 @@ import java.util.List;
  * A simple {@link Fragment} subclass.
  */
 public class DeviceFragment extends Fragment {
+    public static final String TAG = "DeviceFragment";
     static FragmentManager fm;
     static DeviceItemAdapter adapter;
     static List<Device> deviceData;
     final static int RESULT_ADD_DEVICE = 1, RESULT_ADD_TASK = 2;
     final static int RESULT_OK = -1;
+    static String ip;
+    public static final boolean useREST = true;
 
     public DeviceFragment() {
         // Required empty public constructor
@@ -42,12 +54,14 @@ public class DeviceFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_device, container, false);
-
+        ip = getArguments().getString("ip");
         fm = getFragmentManager();
         //sha
         deviceData = new ArrayList<>();
-        deviceData.add(new Device(R.drawable.ac_icon, "A/C Unit", "Sony"));
-        deviceData.add(new Device(R.drawable.tv_icon, "Television", "Tadiran"));
+        if(!useREST) {
+            deviceData.add(new Device(R.drawable.tv_icon, DeviceType.TV, "LG"));
+            deviceData.add(new Device(R.drawable.ac_icon, DeviceType.AC, "Tornado"));
+        }
 
         adapter = new DeviceItemAdapter(getActivity(),
                 R.layout.list_item_row, deviceData);
@@ -62,20 +76,28 @@ public class DeviceFragment extends Fragment {
             public void onItemClick(AdapterView<?> arg0, View myView, int pos,
                                     long arg3) {
                 FragmentTransaction ft = getFragmentManager().beginTransaction();
-                switch (pos) {
-                    case 0:
-                        ft.replace(R.id.container, new ACRemoteFragment());
-                        ft.addToBackStack("ACRemote");
-                        ft.commit();
-                        break;
-                    case 1:
-                        ft.replace(R.id.container, new TVRemoteFragment());
-                        ft.addToBackStack("TVRemote");
-                        ft.commit();
-                        break;
+                Device device = deviceData.get(pos);
+                if (device.getDeviceType().equals(DeviceType.AC)){
+                    ft.replace(R.id.container, new ACRemoteFragment());
+                    ft.addToBackStack("ACRemote");
+                    ft.commit();
+                }else if(device.getDeviceType().equals(DeviceType.TV)){
+                    TVRemoteFragment tvRemoteFragment = new TVRemoteFragment();
+                    Bundle bundle=new Bundle();
+                    bundle.putString("ip",ip);
+                    bundle.putString("brand",device.getBrand());
+                    tvRemoteFragment.setArguments(bundle);
+                    ft.replace(R.id.container, tvRemoteFragment);
+                    ft.addToBackStack("TVRemote");
+                    ft.commit();
                 }
             }
         });
+
+        if(useREST) {
+                GetDevices getDevices = new GetDevices();
+                getDevices.execute((Void) null);
+        }
 
         return rootView;
     }
@@ -109,13 +131,11 @@ public class DeviceFragment extends Fragment {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        //TODO: Boaz, make a remove device from arduino REST request and then refresh page
-                                        deviceData.remove(info.position);
+                                        //TODO: refresh page
+                                        Device remove = deviceData.remove(info.position);
+                                        new ChangeDevice(remove,false).execute();
                                         adapter.notifyDataSetChanged();
-                                        Toast.makeText(
-                                                getActivity(),
-                                                "Device Removed Successfuly",
-                                                Toast.LENGTH_SHORT).show();
+
                                     }
                                 })
                         .setNegativeButton("Cancel",
@@ -140,10 +160,12 @@ public class DeviceFragment extends Fragment {
             case RESULT_ADD_DEVICE:
                 if (resultCode == RESULT_OK) {
                     // The user added a device
-                    String type = data.getStringExtra("typeResult");
+                    DeviceType type =  DeviceType.valueOf(data.getStringExtra("typeResult"));
                     String brand = data.getStringExtra("brandResult");
-                    int logo = type.equals("Television") ? R.drawable.tv_icon : R.drawable.ac_icon;
-                    deviceData.add(new Device(logo,type,brand));
+                    int logo = type.equals(DeviceType.TV) ? R.drawable.tv_icon : R.drawable.ac_icon;
+                    Device device = new Device(logo, type, brand);
+                    deviceData.add(device);
+                    new ChangeDevice(device,true).execute();
                     adapter.notifyDataSetChanged();
                 }
                 break;
@@ -154,6 +176,81 @@ public class DeviceFragment extends Fragment {
                 }
                 break;
         }
+    }
+
+    private class GetDevices extends AsyncTask<Void, Void, ResponseEntity<InfoFromArduino[]>> {
+
+        public GetDevices() {
+        }
+
+        @Override
+        protected ResponseEntity<InfoFromArduino[]> doInBackground(Void... params) {
+            try {
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                URI uri = new URI("http://"+ip+"/devices");
+                ResponseEntity<InfoFromArduino[]> responseEntity = restTemplate.getForEntity(uri, InfoFromArduino[].class);
+                return responseEntity;
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(ResponseEntity<InfoFromArduino[]> infoFromArduino) {
+            super.onPostExecute(infoFromArduino);
+            for (InfoFromArduino fromArduino : infoFromArduino.getBody()) {
+                DeviceType deviceType = DeviceType.valueOf(fromArduino.getType());
+                if(deviceType.equals(DeviceType.TV)) {
+                    deviceData.add(new Device(R.drawable.tv_icon, deviceType, fromArduino.getBrand()));
+                }else if(deviceType.equals(DeviceType.AC)) {
+                    deviceData.add(new Device(R.drawable.ac_icon, deviceType, fromArduino.getBrand()));
+                }
+            }
+            adapter.notifyDataSetChanged();
+        }
+    }
+
+    private class ChangeDevice extends AsyncTask<Void, Void, String> {
+
+        private String action;
+        private Device device;
+
+        public ChangeDevice(Device device,boolean add) {
+            this.device = device;
+            this.action = add ? "add" : "remove";
+        }
+
+        @Override
+        protected String doInBackground(Void... params) {
+            try {
+                RestTemplate restTemplate = new RestTemplate();
+                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+                URI uri = new URI("http://"+ip+"/"+action+"/"+device.getDeviceType()+"/"+device.getBrand());
+                String responseEntity = null;
+                if(useREST) {
+                    responseEntity = restTemplate.getForObject(uri, String.class);
+                }
+                return responseEntity;
+            } catch (Exception e) {
+                Log.e(TAG, e.getMessage(), e);
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(String infoFromArduino) {
+            super.onPostExecute(infoFromArduino);
+            Log.d(TAG, "removed device " + device.getDeviceType() +"-"+ device.getBrand() +" Successfully");
+            adapter.notifyDataSetChanged();
+            if(useREST) {
+                Toast.makeText(getActivity(), "Response "+infoFromArduino, Toast.LENGTH_SHORT).show();
+            }else{
+                Toast.makeText(getActivity(), "removed device " + device.getDeviceType() +"-"+ device.getBrand() +" Successfully", Toast.LENGTH_SHORT).show();
+            }
+        }
+
     }
 
 }
