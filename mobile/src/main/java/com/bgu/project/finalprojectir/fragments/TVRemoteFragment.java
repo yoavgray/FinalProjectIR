@@ -1,7 +1,6 @@
 package com.bgu.project.finalprojectir.fragments;
 
 
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -12,12 +11,9 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import com.bgu.project.finalprojectir.R;
+import com.bgu.project.finalprojectir.Utils;
 import com.bgu.project.finalprojectir.classes.DeviceType;
-
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
-
-import java.net.URI;
+import com.bgu.project.finalprojectir.tasks.RestActionTask;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -38,52 +34,52 @@ public class TVRemoteFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.no0ImageButton:
-                new TVButton("zero","0").execute();
+                new TVButtonAction("zero","0").execute();
                 break;
             case R.id.no1ImageButton:
-                new TVButton("one","1").execute();
+                new TVButtonAction("one","1").execute();
                 break;
             case R.id.no2ImageButton:
-                new TVButton("two","2").execute();
+                new TVButtonAction("two","2").execute();
                 break;
             case R.id.no3ImageButton:
-                new TVButton("three","3").execute();
+                new TVButtonAction("three","3").execute();
                 break;
             case R.id.no4ImageButton:
-                new TVButton("four","4").execute();
+                new TVButtonAction("four","4").execute();
                 break;
             case R.id.no5ImageButton:
-                new TVButton("five","5").execute();
+                new TVButtonAction("five","5").execute();
                 break;
             case R.id.no6ImageButton:
-                new TVButton("six","6").execute();
+                new TVButtonAction("six","6").execute();
                 break;
             case R.id.no7ImageButton:
-                new TVButton("seven","7").execute();
+                new TVButtonAction("seven","7").execute();
                 break;
             case R.id.no8ImageButton:
-                new TVButton("eight","8").execute();
+                new TVButtonAction("eight","8").execute();
                 break;
             case R.id.no9ImageButton:
-                new TVButton("nine","9").execute();
+                new TVButtonAction("nine","9").execute();
                 break;
             case R.id.volumeUpImageButton:
-                new TVButton("vup","volume up").execute();
+                new TVButtonAction("vup","volume up").execute();
                 break;
             case R.id.volumeDownImageButton:
-                new TVButton("vdown","volume down").execute();
+                new TVButtonAction("vdown","volume down").execute();
                 break;
             case R.id.channelUpImageButton:
-                new TVButton("cup","channel up").execute();
+                new TVButtonAction("cup","channel up").execute();
                 break;
             case R.id.channelDownImageButton:
-                new TVButton("cdown","channel down").execute();
+                new TVButtonAction("cdown","channel down").execute();
                 break;
             case R.id.muteImageButton:
-                new TVButton("mute","mute").execute();
+                new TVButtonAction("mute","mute").execute();
                 break;
             case R.id.powerImageButton:
-                new TVButton("power","power").execute();
+                new TVButtonAction("power","power").execute();
                 break;
         }
     }
@@ -130,25 +126,21 @@ public class TVRemoteFragment extends Fragment implements View.OnClickListener {
         return rootView;
     }
 
-    private class TVButton extends AsyncTask<Void, Void, String> {
+    private class TVButtonAction extends RestActionTask{
 
-        private String action;
         private String description;
 
-        public TVButton(String action,String description) {
-            this.action = action;
+        public TVButtonAction(String action, String description) {
+            super(TAG,description, Utils.getUriForAction(ip,action,DeviceType.TV,brand));
             this.description = description;
         }
 
         @Override
         protected String doInBackground(Void... params) {
             try {
-                RestTemplate restTemplate = new RestTemplate();
-                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                URI uri = new URI("http://"+ip+"/"+DeviceType.TV+"/"+brand+"/"+action);
-                String responseEntity= null;
+                String responseEntity;
                 if(useREST) {
-                    responseEntity = restTemplate.getForObject(uri, String.class);
+                    responseEntity = super.doInBackground();
                 }
                 return responseEntity;
             } catch (Exception e) {
@@ -157,10 +149,11 @@ public class TVRemoteFragment extends Fragment implements View.OnClickListener {
             return null;
         }
 
+
+
         @Override
         protected void onPostExecute(String infoFromArduino) {
             super.onPostExecute(infoFromArduino);
-            Log.d(TAG, "button " + description + " was pressed");
             if(useREST) {
                 Toast.makeText(getActivity(), "Response "+infoFromArduino, Toast.LENGTH_SHORT).show();
             }else{

@@ -22,8 +22,11 @@ import android.widget.Toast;
 import com.bgu.project.finalprojectir.DeviceItemAdapter;
 import com.bgu.project.finalprojectir.InfoFromArduino;
 import com.bgu.project.finalprojectir.R;
+import com.bgu.project.finalprojectir.Utils;
 import com.bgu.project.finalprojectir.classes.Device;
 import com.bgu.project.finalprojectir.classes.DeviceType;
+import com.bgu.project.finalprojectir.tasks.AbstractRestTask;
+import com.bgu.project.finalprojectir.tasks.RestActionTask;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
@@ -44,7 +47,7 @@ public class DeviceFragment extends Fragment {
     final static int RESULT_ADD_DEVICE = 1, RESULT_ADD_TASK = 2;
     final static int RESULT_OK = -1;
     static String ip;
-    public static final boolean useREST = true;
+    public static final boolean useREST = true; // for debug
 
     public DeviceFragment() {
         // Required empty public constructor
@@ -133,7 +136,7 @@ public class DeviceFragment extends Fragment {
                                                         int whichButton) {
                                         //TODO: refresh page
                                         Device remove = deviceData.remove(info.position);
-                                        new ChangeDevice(remove,false).execute();
+                                        removeDevice(remove);
                                         adapter.notifyDataSetChanged();
 
                                     }
@@ -165,7 +168,7 @@ public class DeviceFragment extends Fragment {
                     int logo = type.equals(DeviceType.TV) ? R.drawable.tv_icon : R.drawable.ac_icon;
                     Device device = new Device(logo, type, brand);
                     deviceData.add(device);
-                    new ChangeDevice(device,true).execute();
+                    addDevice(device);
                     adapter.notifyDataSetChanged();
                 }
                 break;
@@ -178,19 +181,25 @@ public class DeviceFragment extends Fragment {
         }
     }
 
-    private class GetDevices extends AsyncTask<Void, Void, ResponseEntity<InfoFromArduino[]>> {
+    private void addDevice(Device device) {
+        new ChangeDevice(device,"add").execute();
+    }
+
+    private void removeDevice(Device remove) {
+        new ChangeDevice(remove,"remove").execute();
+    }
+
+    private class GetDevices extends AbstractRestTask<Void, Void, ResponseEntity<InfoFromArduino[]>> {
 
         public GetDevices() {
+            super(TAG, "get devices");
         }
 
         @Override
         protected ResponseEntity<InfoFromArduino[]> doInBackground(Void... params) {
             try {
-                RestTemplate restTemplate = new RestTemplate();
-                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                URI uri = new URI("http://"+ip+"/devices");
-                ResponseEntity<InfoFromArduino[]> responseEntity = restTemplate.getForEntity(uri, InfoFromArduino[].class);
-                return responseEntity;
+                URI uri = Utils.getURIForGetDevices(ip);
+                return restTemplate.getForEntity(uri, InfoFromArduino[].class);
             } catch (Exception e) {
                 Log.e(TAG, e.getMessage(), e);
             }
@@ -212,25 +221,21 @@ public class DeviceFragment extends Fragment {
         }
     }
 
-    private class ChangeDevice extends AsyncTask<Void, Void, String> {
+    private class ChangeDevice extends RestActionTask {
 
-        private String action;
         private Device device;
 
-        public ChangeDevice(Device device,boolean add) {
+        public ChangeDevice(Device device,String action) {
+            super(TAG,"change device",Utils.getURIForAddOrRemoveDevice(ip,action,device.getDeviceType(),device.getBrand()));
             this.device = device;
-            this.action = add ? "add" : "remove";
         }
 
         @Override
         protected String doInBackground(Void... params) {
             try {
-                RestTemplate restTemplate = new RestTemplate();
-                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-                URI uri = new URI("http://"+ip+"/"+action+"/"+device.getDeviceType()+"/"+device.getBrand());
-                String responseEntity = null;
+                String responseEntity;
                 if(useREST) {
-                    responseEntity = restTemplate.getForObject(uri, String.class);
+                    responseEntity = super.doInBackground();
                 }
                 return responseEntity;
             } catch (Exception e) {
@@ -242,12 +247,11 @@ public class DeviceFragment extends Fragment {
         @Override
         protected void onPostExecute(String infoFromArduino) {
             super.onPostExecute(infoFromArduino);
-            Log.d(TAG, "removed device " + device.getDeviceType() +"-"+ device.getBrand() +" Successfully");
             adapter.notifyDataSetChanged();
             if(useREST) {
                 Toast.makeText(getActivity(), "Response "+infoFromArduino, Toast.LENGTH_SHORT).show();
             }else{
-                Toast.makeText(getActivity(), "removed device " + device.getDeviceType() +"-"+ device.getBrand() +" Successfully", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), "Removed device " + device.getDeviceType() +"-"+ device.getBrand() +" Successfully", Toast.LENGTH_SHORT).show();
             }
         }
 

@@ -155,7 +155,7 @@ public class Main extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
             itemDataList = new ArrayList<>();
-            itemDataList.add(new Arduino(R.drawable.boaz_icon, "Buzi's Arduino", "10.100.102.4:8080/rest"));
+            itemDataList.add(new Arduino(R.drawable.boaz_icon, "Buzi's Arduino", "10.100.102.7:8080/rest"));
             itemDataList.add(new Arduino(R.drawable.yoav_icon, "Gray's Arduino", "127.0.0.2"));
             itemDataList.add(new Arduino(R.drawable.asi_icon, "Asi's Arduino", "127.0.0.3"));
             itemDataList.add(new Arduino(R.drawable.omri_icon, "Havivian's Arduino", "127.0.0.4"));
