@@ -5,11 +5,8 @@ import android.app.Fragment;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
 import android.support.v7.app.ActionBarActivity;
@@ -30,7 +27,6 @@ import java.util.List;
 
 
 public class Main extends ActionBarActivity {
-
     private static final int RESULT_SETTINGS = 1;
     private static final int RESULT_ADD_ARDUINO = 2;
 
@@ -51,19 +47,28 @@ public class Main extends ActionBarActivity {
                     .commit();
         }
 
+        // Create a WearableExtender to add functionality for wearables
+        NotificationCompat.WearableExtender wearableExtender =
+                new NotificationCompat.WearableExtender()
+                        .setHintHideIcon(true);
+
+// Create a NotificationCompat.Builder to build a standard notification
+// then extend it with the WearableExtender
+        Notification notif = new NotificationCompat.Builder(this)
+                .setContentTitle("New mail from Yoav")
+                .setContentText("Kaki")
+                .setSmallIcon(R.drawable.omri_icon)
+                .extend(wearableExtender)
+                .build();
+
+
+
         // Adding notifications - Eventually for the Watch
         int notificationId = 1;
         // Build intent for notification content
-        Intent viewIntent = new Intent(this, DeviceActivity.class);
+        Intent viewIntent = new Intent(this, Main.class);
         PendingIntent viewPendingIntent =
                 PendingIntent.getActivity(this, 0, viewIntent, 0);
-
-        // Build an intent for an action to view a map
-        Intent mapIntent = new Intent(Intent.ACTION_VIEW);
-        Uri geoUri = Uri.parse("geo:0,0?q=" + Uri.encode(null));
-        mapIntent.setData(geoUri);
-        PendingIntent mapPendingIntent =
-                PendingIntent.getActivity(this, 0, mapIntent, 0);
 
         Notification notificationBuilder =
                 new NotificationCompat.Builder(this)
@@ -73,6 +78,10 @@ public class Main extends ActionBarActivity {
                         .setContentTitle("Arduino Detected!")
                         .setContentText("Gray's Arduino")
                         .setContentIntent(viewPendingIntent)
+                        .addAction(R.drawable.tv_icon,
+                                "Control TV", viewPendingIntent)
+                        .addAction(R.drawable.ac_icon,
+                                "Control AC", viewPendingIntent)
                         .build();
 
         // Get an instance of the NotificationManager service
@@ -80,7 +89,8 @@ public class Main extends ActionBarActivity {
                 NotificationManagerCompat.from(this);
 
         // Build the notification and issues it with notification manager.
-//        notificationManager.notify(notificationId, notificationBuilder);
+        notificationManager.notify(notificationId, notificationBuilder);
+        notificationManager.notify(2, notif);
     }
 
 
@@ -118,8 +128,8 @@ public class Main extends ActionBarActivity {
         Log.d("msg","" + requestCode);
         switch (requestCode) {
             case RESULT_SETTINGS:
-                SharedPreferences sharedPrefs = PreferenceManager
-                        .getDefaultSharedPreferences(this);
+                //SharedPreferences sharedPrefs = PreferenceManager
+                //        .getDefaultSharedPreferences(this);
                 //mIsPtt = sharedPrefs.getBoolean("ptt_checkbox", true);
                 break;
         }

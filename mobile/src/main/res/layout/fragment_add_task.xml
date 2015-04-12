@@ -23,12 +23,23 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Based on location"/>
-    </RadioGroup>
 
-    <TextView android:text="@string/device_ip" android:layout_width="wrap_content"
-        android:layout_height="wrap_content" android:id="@+id/textViewMutag"
-        android:textSize="22dp"
-        android:textColor="@color/material_blue_grey_800"/>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:src="@drawable/map"
+            android:id="@+id/imageView" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:textSize="25dp"
+            android:text="Turn AC on"
+            android:textColor="#000000"
+            android:id="@+id/textView" />
+    </RadioGroup>
 
     <LinearLayout
         android:paddingTop="24dp"

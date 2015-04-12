@@ -41,7 +41,6 @@ public class AddArduinoFragment extends DialogFragment {
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                System.out.println("1");
                 getTargetFragment().onActivityResult(
                         getTargetRequestCode(), RESULT_CANCELED, null);
                 dismiss();
