@@ -4,6 +4,7 @@ import android.app.FragmentManager;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -18,6 +19,7 @@ public class DeviceActivity extends ActionBarActivity  {
     FragmentManager fm = getFragmentManager();
 
     private static final int RESULT_ADD_DEVICE = 1;
+    private static final int RESULT_EDIT_TASK = 2;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,7 +44,6 @@ public class DeviceActivity extends ActionBarActivity  {
             ((TextView) findViewById(R.id.deviceIpTextView)).setText(incomingIntent.getStringExtra("deviceIp"));
         }
 
-        //TODO: Change the Headline to the arduino name and add IP and relevant info also
     }
 
     /**
@@ -77,8 +78,6 @@ public class DeviceActivity extends ActionBarActivity  {
                 // Show DialogFragment
                 adFragment.setTargetFragment(deviceFragment, RESULT_ADD_DEVICE);
                 adFragment.show(fm, "Dialog Fragment");
-                return true;
-            case R.id.action_settings:
                 return true;
         }
         return super.onOptionsItemSelected(item);

@@ -1,4 +1,4 @@
-package fragments;
+package com.bgu.project.finalprojectir.fragments;
 
 import android.app.Activity;
 import android.net.Uri;
@@ -66,7 +66,7 @@ public class AcRemoteControlFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         TextView textView = new TextView(getActivity());
-        textView.setText(R.string.hello_blank_fragment);
+        textView.setText("Hiush");
         return textView;
     }
 

@@ -2,7 +2,7 @@ package com.bgu.project.finalprojectir.fragments;
 
 
 import android.app.DialogFragment;
-import android.app.PendingIntent;
+import android.app.FragmentTransaction;
 import android.app.job.JobInfo;
 import android.app.job.JobScheduler;
 import android.content.ComponentName;
@@ -18,9 +18,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.RadioButton;
 
+import com.bgu.project.finalprojectir.MapsActivity;
 import com.bgu.project.finalprojectir.R;
 import com.bgu.project.finalprojectir.RestJobService;
-import com.bgu.project.finalprojectir.classes.DeviceType;
+import com.bgu.project.finalprojectir.classes.TaskType;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,14 +38,17 @@ public class AddTaskFragment extends DialogFragment{
         View rootView = inflater.inflate(R.layout.fragment_add_task, container,
                 false);
         getDialog().setTitle("Add a task to device!");
-        // Do something else
+
+        FragmentTransaction ft = getChildFragmentManager().beginTransaction();
+        ft.add(R.id.taskContainer, new TimeTaskFragment());
+        ft.commit();
 
         okButton = (Button) rootView.findViewById(R.id.addArduinoOkButton);
         okButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent();
-                String type = timeRadioButton.isChecked() ? String.valueOf(DeviceType.TV) : String.valueOf(DeviceType.AC);
+                String type = timeRadioButton.isChecked() ? String.valueOf(TaskType.TIME) : String.valueOf(TaskType.LOCATION);
                 intent.putExtra("typeResult", type);
                 getTargetFragment().onActivityResult(
                         getTargetRequestCode(), RESULT_OK, intent);
@@ -74,9 +78,8 @@ public class AddTaskFragment extends DialogFragment{
         locationRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /**
-                 * TODO Yoav - go to MapsActivity with the url (after the user insert the action)
-                */
+                Intent in = new Intent(getActivity(), MapsActivity.class);
+                startActivityForResult(in, 1);
             }
         });
 

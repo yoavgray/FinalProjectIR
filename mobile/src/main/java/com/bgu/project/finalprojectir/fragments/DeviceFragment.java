@@ -5,7 +5,6 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.util.Log;
@@ -19,7 +18,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.bgu.project.finalprojectir.DeviceItemAdapter;
+import com.bgu.project.finalprojectir.classes.DeviceItemAdapter;
 import com.bgu.project.finalprojectir.InfoFromArduino;
 import com.bgu.project.finalprojectir.R;
 import com.bgu.project.finalprojectir.Utils;
@@ -29,8 +28,6 @@ import com.bgu.project.finalprojectir.tasks.AbstractRestTask;
 import com.bgu.project.finalprojectir.tasks.RestActionTask;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -44,10 +41,10 @@ public class DeviceFragment extends Fragment {
     static FragmentManager fm;
     static DeviceItemAdapter adapter;
     static List<Device> deviceData;
-    final static int RESULT_ADD_DEVICE = 1, RESULT_ADD_TASK = 2;
+    final static int RESULT_ADD_DEVICE = 1;
     final static int RESULT_OK = -1;
     static String ip;
-    public static final boolean useREST = true; // for debug
+    public static final boolean useREST = false; // for debug
 
     public DeviceFragment() {
         // Required empty public constructor
@@ -64,6 +61,9 @@ public class DeviceFragment extends Fragment {
         if(!useREST) {
             deviceData.add(new Device(R.drawable.tv_icon, DeviceType.TV, "LG"));
             deviceData.add(new Device(R.drawable.ac_icon, DeviceType.AC, "Tornado"));
+        } else {
+            GetDevices getDevices = new GetDevices();
+            getDevices.execute((Void) null);
         }
 
         adapter = new DeviceItemAdapter(getActivity(),
@@ -97,12 +97,13 @@ public class DeviceFragment extends Fragment {
             }
         });
 
-        if(useREST) {
-                GetDevices getDevices = new GetDevices();
-                getDevices.execute((Void) null);
-        }
-
         return rootView;
+    }
+
+    private List<Device> getDevicesByIp(String ip) {
+        //TODO Boaz: I need this function to return a List of devices (which is an ArrayList) according to an ip
+        //the constructor needs (int icon, DeviceType title, String brand)
+        return null;
     }
 
     @Override
@@ -114,19 +115,13 @@ public class DeviceFragment extends Fragment {
     }
 
     @Override
-    //What happens when you press long on a contact
+    //What happens when you press long on a list item
     public boolean onContextItemSelected(MenuItem item) {
         final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
                 .getMenuInfo();
         switch (item.getItemId()) {
-            case R.id.add_task:
-                //TODO: Add task
-                AddTaskFragment atFragment = new AddTaskFragment();
-                // Show DialogFragment
-                atFragment.setTargetFragment(this, RESULT_ADD_TASK);
-                atFragment.show(fm, "Dialog Fragment");
-                return true;
             case R.id.remove_device:
+                Log.d("Hey!","Remove Device!");
                 new AlertDialog.Builder(getActivity())
                         .setTitle("Warning")
                         .setMessage("Are you sure you want to remove device?")
@@ -134,7 +129,6 @@ public class DeviceFragment extends Fragment {
                                 new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
-                                        //TODO: refresh page
                                         Device remove = deviceData.remove(info.position);
                                         removeDevice(remove);
                                         adapter.notifyDataSetChanged();
@@ -146,7 +140,7 @@ public class DeviceFragment extends Fragment {
                                     public void onClick(DialogInterface dialog,
                                                         int whichButton) {
                                         Toast.makeText(getActivity(),
-                                                "You chicken shit..",
+                                                "Coward..",
                                                 Toast.LENGTH_SHORT).show();
                                     }
                                 }).show();
@@ -161,23 +155,17 @@ public class DeviceFragment extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case RESULT_ADD_DEVICE:
-                if (resultCode == RESULT_OK) {
-                    // The user added a device
-                    DeviceType type =  DeviceType.valueOf(data.getStringExtra("typeResult"));
-                    String brand = data.getStringExtra("brandResult");
-                    int logo = type.equals(DeviceType.TV) ? R.drawable.tv_icon : R.drawable.ac_icon;
-                    Device device = new Device(logo, type, brand);
-                    deviceData.add(device);
-                    addDevice(device);
-                    adapter.notifyDataSetChanged();
-                }
-                break;
-            case RESULT_ADD_TASK:
-                if (resultCode == RESULT_OK) {
-                    // The user added a task
-                    Toast.makeText(getActivity(),"Task added",Toast.LENGTH_SHORT).show();
-                }
-                break;
+            if (resultCode == RESULT_OK) {
+                // The user added a device
+                DeviceType type =  DeviceType.valueOf(data.getStringExtra("typeResult"));
+                String brand = data.getStringExtra("brandResult");
+                int logo = type.equals(DeviceType.TV) ? R.drawable.tv_icon : R.drawable.ac_icon;
+                Device device = new Device(logo, type, brand);
+                deviceData.add(device);
+                addDevice(device);
+                adapter.notifyDataSetChanged();
+            }
+            break;
         }
     }
 
@@ -233,7 +221,7 @@ public class DeviceFragment extends Fragment {
         @Override
         protected String doInBackground(Void... params) {
             try {
-                String responseEntity;
+                String responseEntity = null;
                 if(useREST) {
                     responseEntity = super.doInBackground();
                 }

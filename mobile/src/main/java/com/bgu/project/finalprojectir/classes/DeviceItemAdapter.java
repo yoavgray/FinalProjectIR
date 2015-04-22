@@ -1,4 +1,4 @@
-package com.bgu.project.finalprojectir;
+package com.bgu.project.finalprojectir.classes;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -8,7 +8,8 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.bgu.project.finalprojectir.classes.Arduino;
+import com.bgu.project.finalprojectir.R;
+import com.bgu.project.finalprojectir.classes.Device;
 
 import java.util.List;
 
@@ -17,13 +18,13 @@ import java.util.List;
      * @author yoav
      *
      */
-    public class ArduinoItemAdapter extends ArrayAdapter<Arduino> {
+    public class DeviceItemAdapter extends ArrayAdapter<Device> {
 
         Context context;
         int layoutResourceId;
-        List<Arduino> data = null;
+        List<Device> data = null;
 
-        public ArduinoItemAdapter(Context context, int layoutResourceId, List<Arduino> data) {
+        public DeviceItemAdapter(Context context, int layoutResourceId, List<Device> data) {
             super(context, layoutResourceId, data);
             this.layoutResourceId = layoutResourceId;
             this.context = context;
@@ -52,9 +53,9 @@ import java.util.List;
                 holder = (ItemHolder)row.getTag();
             }
 
-            Arduino listItem = data.get(position);
+            Device listItem = data.get(position);
             holder.txtBigTitle.setText(listItem.getTitle());
-            holder.txtSmallTitle.setText(listItem.getIp());
+            holder.txtSmallTitle.setText(listItem.getBrand());
             holder.imgIcon.setImageResource(listItem.getIcon());
 
             return row;

@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.bgu.project.finalprojectir.EditTasksActivity" >
+
+    <item
+        android:id="@+id/remove_task"
+        android:title="Remove Task"
+        android:text="Remove Task"/>
+</menu>

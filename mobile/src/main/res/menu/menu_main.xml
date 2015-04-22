@@ -8,4 +8,7 @@
         android:icon="@drawable/ic_add"
         android:title="@string/action_add_device"
         app:showAsAction="always" />
+    <item android:id="@+id/edit_tasks"
+        android:title="@string/action_edit_tasks"
+        android:orderInCategory="1" app:showAsAction="never" />
 </menu>

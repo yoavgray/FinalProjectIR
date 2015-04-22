@@ -18,7 +18,7 @@ import com.bgu.project.finalprojectir.tasks.RestActionTask;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class TVRemoteFragment extends Fragment implements View.OnClickListener {
+public class TVRemoteFragment extends Fragment implements View.OnClickListener, View.OnLongClickListener {
     public static final String TAG = "TV Remote";
     static private ImageButton ibZero, ibOne, ibTwo, ibThree, ibFour, ibFive, ibSix, ibSeven, ibEight, ibNine;
     static private ImageButton ibPower, ibMute, ibChannelUp, ibChannelDown,ibVolumeUp, ibVolumeDown;
@@ -34,93 +34,148 @@ public class TVRemoteFragment extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.no0ImageButton:
-                new TVButtonAction("zero","0").execute();
+                new TVButtonAction("zero", "0").execute();
                 break;
             case R.id.no1ImageButton:
-                new TVButtonAction("one","1").execute();
+                new TVButtonAction("one", "1").execute();
                 break;
             case R.id.no2ImageButton:
-                new TVButtonAction("two","2").execute();
+                new TVButtonAction("two", "2").execute();
                 break;
             case R.id.no3ImageButton:
-                new TVButtonAction("three","3").execute();
+                new TVButtonAction("three", "3").execute();
                 break;
             case R.id.no4ImageButton:
-                new TVButtonAction("four","4").execute();
+                new TVButtonAction("four", "4").execute();
                 break;
             case R.id.no5ImageButton:
-                new TVButtonAction("five","5").execute();
+                new TVButtonAction("five", "5").execute();
                 break;
             case R.id.no6ImageButton:
-                new TVButtonAction("six","6").execute();
+                new TVButtonAction("six", "6").execute();
                 break;
             case R.id.no7ImageButton:
-                new TVButtonAction("seven","7").execute();
+                new TVButtonAction("seven", "7").execute();
                 break;
             case R.id.no8ImageButton:
-                new TVButtonAction("eight","8").execute();
+                new TVButtonAction("eight", "8").execute();
                 break;
             case R.id.no9ImageButton:
-                new TVButtonAction("nine","9").execute();
+                new TVButtonAction("nine", "9").execute();
                 break;
             case R.id.volumeUpImageButton:
-                new TVButtonAction("vup","volume up").execute();
+                new TVButtonAction("vup", "volume up").execute();
                 break;
             case R.id.volumeDownImageButton:
-                new TVButtonAction("vdown","volume down").execute();
+                new TVButtonAction("vdown", "volume down").execute();
                 break;
             case R.id.channelUpImageButton:
-                new TVButtonAction("cup","channel up").execute();
+                new TVButtonAction("cup", "channel up").execute();
                 break;
             case R.id.channelDownImageButton:
-                new TVButtonAction("cdown","channel down").execute();
+                new TVButtonAction("cdown", "channel down").execute();
                 break;
             case R.id.muteImageButton:
-                new TVButtonAction("mute","mute").execute();
+                new TVButtonAction("mute", "mute").execute();
                 break;
             case R.id.powerImageButton:
-                new TVButtonAction("power","power").execute();
+                new TVButtonAction("power", "power").execute();
                 break;
         }
     }
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public boolean onLongClick (View v) {
+        switch (v.getId()) {
+            case R.id.no0ImageButton:
+                new TVButtonAction("zero", "0").execute();
+                break;
+            case R.id.no1ImageButton:
+                new TVButtonAction("one", "1").execute();
+                break;
+            case R.id.no2ImageButton:
+                new TVButtonAction("two", "2").execute();
+                break;
+            case R.id.no3ImageButton:
+                new TVButtonAction("three", "3").execute();
+                break;
+            case R.id.no4ImageButton:
+                new TVButtonAction("four", "4").execute();
+                break;
+            case R.id.no5ImageButton:
+                new TVButtonAction("five", "5").execute();
+                break;
+            case R.id.no6ImageButton:
+                new TVButtonAction("six", "6").execute();
+                break;
+            case R.id.no7ImageButton:
+                new TVButtonAction("seven", "7").execute();
+                break;
+            case R.id.no8ImageButton:
+                new TVButtonAction("eight", "8").execute();
+                break;
+            case R.id.no9ImageButton:
+                new TVButtonAction("nine", "9").execute();
+                break;
+            case R.id.volumeUpImageButton:
+                new TVButtonAction("vup", "volume up").execute();
+                break;
+            case R.id.volumeDownImageButton:
+                new TVButtonAction("vdown", "volume down").execute();
+                break;
+            case R.id.channelUpImageButton:
+                new TVButtonAction("cup", "channel up").execute();
+                break;
+            case R.id.channelDownImageButton:
+                new TVButtonAction("cdown", "channel down").execute();
+                break;
+            case R.id.muteImageButton:
+                new TVButtonAction("mute", "mute").execute();
+                break;
+            case R.id.powerImageButton:
+                new TVButtonAction("power", "power").execute();
+                break;
+        }
+        return true;
+    }
+
+    @Override
+    public View onCreateView (LayoutInflater inflater, ViewGroup container,
+            Bundle savedInstanceState){
         View rootView = inflater.inflate(R.layout.fragment_tvremote_control, container, false);
         ip = getArguments().getString("ip");
         brand = getArguments().getString("brand");
-        ibZero = (ImageButton)rootView.findViewById(R.id.no0ImageButton);
+        ibZero = (ImageButton) rootView.findViewById(R.id.no0ImageButton);
         ibZero.setOnClickListener(this);
-        ibOne = (ImageButton)rootView.findViewById(R.id.no1ImageButton);
+        ibOne = (ImageButton) rootView.findViewById(R.id.no1ImageButton);
         ibOne.setOnClickListener(this);
-        ibTwo = (ImageButton)rootView.findViewById(R.id.no2ImageButton);
+        ibTwo = (ImageButton) rootView.findViewById(R.id.no2ImageButton);
         ibTwo.setOnClickListener(this);
-        ibThree = (ImageButton)rootView.findViewById(R.id.no3ImageButton);
+        ibThree = (ImageButton) rootView.findViewById(R.id.no3ImageButton);
         ibThree.setOnClickListener(this);
-        ibFour = (ImageButton)rootView.findViewById(R.id.no4ImageButton);
+        ibFour = (ImageButton) rootView.findViewById(R.id.no4ImageButton);
         ibFour.setOnClickListener(this);
-        ibFive = (ImageButton)rootView.findViewById(R.id.no5ImageButton);
+        ibFive = (ImageButton) rootView.findViewById(R.id.no5ImageButton);
         ibFive.setOnClickListener(this);
-        ibSix = (ImageButton)rootView.findViewById(R.id.no6ImageButton);
+        ibSix = (ImageButton) rootView.findViewById(R.id.no6ImageButton);
         ibSix.setOnClickListener(this);
-        ibSeven = (ImageButton)rootView.findViewById(R.id.no7ImageButton);
+        ibSeven = (ImageButton) rootView.findViewById(R.id.no7ImageButton);
         ibSeven.setOnClickListener(this);
-        ibEight = (ImageButton)rootView.findViewById(R.id.no8ImageButton);
+        ibEight = (ImageButton) rootView.findViewById(R.id.no8ImageButton);
         ibEight.setOnClickListener(this);
-        ibNine = (ImageButton)rootView.findViewById(R.id.no9ImageButton);
+        ibNine = (ImageButton) rootView.findViewById(R.id.no9ImageButton);
         ibNine.setOnClickListener(this);
-        ibVolumeUp = (ImageButton)rootView.findViewById(R.id.volumeUpImageButton);
+        ibVolumeUp = (ImageButton) rootView.findViewById(R.id.volumeUpImageButton);
         ibVolumeUp.setOnClickListener(this);
-        ibVolumeDown = (ImageButton)rootView.findViewById(R.id.volumeDownImageButton);
+        ibVolumeDown = (ImageButton) rootView.findViewById(R.id.volumeDownImageButton);
         ibVolumeDown.setOnClickListener(this);
-        ibChannelUp = (ImageButton)rootView.findViewById(R.id.channelUpImageButton);
+        ibChannelUp = (ImageButton) rootView.findViewById(R.id.channelUpImageButton);
         ibChannelUp.setOnClickListener(this);
-        ibChannelDown = (ImageButton)rootView.findViewById(R.id.channelDownImageButton);
+        ibChannelDown = (ImageButton) rootView.findViewById(R.id.channelDownImageButton);
         ibChannelDown.setOnClickListener(this);
-        ibPower = (ImageButton)rootView.findViewById(R.id.powerImageButton);
+        ibPower = (ImageButton) rootView.findViewById(R.id.powerImageButton);
         ibPower.setOnClickListener(this);
-        ibMute = (ImageButton)rootView.findViewById(R.id.muteImageButton);
+        ibMute = (ImageButton) rootView.findViewById(R.id.muteImageButton);
         ibMute.setOnClickListener(this);
 
         return rootView;
@@ -138,7 +193,7 @@ public class TVRemoteFragment extends Fragment implements View.OnClickListener {
         @Override
         protected String doInBackground(Void... params) {
             try {
-                String responseEntity;
+                String responseEntity = null;
                 if(useREST) {
                     responseEntity = super.doInBackground();
                 }
