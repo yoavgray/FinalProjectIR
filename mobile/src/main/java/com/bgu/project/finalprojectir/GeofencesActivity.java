@@ -56,6 +56,8 @@ public class GeofencesActivity extends Activity implements
     private double latitude;
     private double longitude;
     private float radius;
+    private String taskName;
+    private boolean isEntering;
 
     /**
      * Called when the activity is starting. Restores the activity state.
@@ -65,11 +67,14 @@ public class GeofencesActivity extends Activity implements
         super.onCreate(savedInstanceState);
         if (savedInstanceState != null) {
             mIsInResolution = savedInstanceState.getBoolean(KEY_IN_RESOLUTION, false);
-        }else{
-            url = getIntent().getStringExtra("url");
-            latitude = getIntent().getDoubleExtra("latitude", 0);
-            longitude = getIntent().getDoubleExtra("longitude",0);
-            radius = getIntent().getFloatExtra("radius", 100);
+        } else {
+            Intent i = getIntent();
+            url = i.getStringExtra("url");
+            latitude = i.getDoubleExtra("latitude", 0);
+            longitude = i.getDoubleExtra("longitude",0);
+            radius = i.getFloatExtra("radius", 100);
+            taskName = i.getStringExtra("taskName");
+            isEntering = i.getBooleanExtra("isEntering", true);
         }
     }
 
@@ -191,12 +196,12 @@ public class GeofencesActivity extends Activity implements
     //All the parameters are doubles because they suppose to arrive from the map (url is including the device and the action).
     // radius should be at least 100m consider adding validation here or at the dialog.
     private void addNewGeoTask(String url, double latitude, double longitude, float radius) {
-
+        int transitionType = isEntering == true ? Geofence.GEOFENCE_TRANSITION_ENTER : Geofence.GEOFENCE_TRANSITION_EXIT;
         addGeofence(new Geofence.Builder()
                 .setRequestId(url)
                 .setCircularRegion(latitude, longitude, radius)
                 .setExpirationDuration(GEOFENCE_EXPIRATION_IN_MILLISECONDS)
-                .setTransitionTypes(Geofence.GEOFENCE_TRANSITION_ENTER)
+                .setTransitionTypes(transitionType)
                 .build());
 
     }

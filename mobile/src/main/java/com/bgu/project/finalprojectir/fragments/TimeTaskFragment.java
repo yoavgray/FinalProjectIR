@@ -33,10 +33,10 @@ public class TimeTaskFragment extends Fragment {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_time_task, container, false);
         timePicker = (TimePicker) rootView.findViewById(R.id.timePicker);
+
         setCurrentTimeOnView();
         return rootView;
     }
-
 
     // display current time
     public void setCurrentTimeOnView() {
@@ -44,22 +44,22 @@ public class TimeTaskFragment extends Fragment {
         hour = c.get(Calendar.HOUR_OF_DAY);
         minute = c.get(Calendar.MINUTE);
         // set current time into timepicker
+        timePicker.setIs24HourView(true);
         timePicker.setCurrentHour(hour);
         timePicker.setCurrentMinute(minute);
-
     }
 
     private TimePickerDialog.OnTimeSetListener timePickerListener =
-            new TimePickerDialog.OnTimeSetListener() {
-                public void onTimeSet(TimePicker view, int selectedHour,
-                                      int selectedMinute) {
-                    hour = selectedHour;
-                    minute = selectedMinute;
+        new TimePickerDialog.OnTimeSetListener() {
+            public void onTimeSet(TimePicker view, int selectedHour,
+                                  int selectedMinute) {
+                hour = selectedHour;
+                minute = selectedMinute;
 
-                    // set current time into timepicker
-                    timePicker.setCurrentHour(hour);
-                    timePicker.setCurrentMinute(minute);
+                // set current time into timepicker
+                timePicker.setCurrentHour(hour);
+                timePicker.setCurrentMinute(minute);
 
-                }
-            };
+            }
+        };
 }

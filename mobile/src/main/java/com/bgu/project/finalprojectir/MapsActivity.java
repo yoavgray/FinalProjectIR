@@ -26,6 +26,10 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
     private static final String KEY_IN_RESOLUTION = "is_in_resolution";
     private static final String TAG = "MapsActivity";
+    private boolean isEntering;
+    private float radius;
+    private String url;
+    private String taskName;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -51,6 +55,13 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         if (savedInstanceState != null) {
             mIsInResolution = savedInstanceState.getBoolean(KEY_IN_RESOLUTION, false);
         }
+
+        Intent i = getIntent();
+        url = i.getStringExtra("url");
+        radius = i.getFloatExtra("radius", 100);
+        isEntering = i.getBooleanExtra("isEntering", true);
+        taskName = i.getStringExtra("taskName");
+
         setContentView(R.layout.activity_maps);
     }
 
@@ -102,8 +113,10 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                 Intent intent = new Intent(MapsActivity.this ,GeofencesActivity.class)
                         .putExtra("latitude", latLng.latitude)
                         .putExtra("longitude", latLng.longitude)
-                        .putExtra("url", "here the real url should be")
-                        .putExtra("radius", 100);//minimum 100m radius (the number is in meters)
+                        .putExtra("url", url)
+                        .putExtra("entering", isEntering)
+                        .putExtra("taskName", taskName)
+                        .putExtra("radius", radius);//minimum 100m radius (the number is in meters)
                 startActivity(intent);
             }
         });

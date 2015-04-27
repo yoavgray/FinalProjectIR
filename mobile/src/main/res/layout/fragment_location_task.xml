@@ -1,0 +1,63 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="com.bgu.project.finalprojectir.fragments.LocationTaskFragment">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="Enter Radius From Location"
+        android:textSize="16dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp"
+        android:paddingBottom="3dp"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <EditText
+        android:id="@+id/radiusEditText"
+        android:hint="Minimum 100 meters!"
+        android:paddingLeft="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="Would you like the task to operate when entering an area or leaving?"
+        android:textSize="16dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+    <RadioGroup xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="3dp"
+        android:orientation="vertical">
+        <RadioButton android:id="@+id/enteringRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Entering"/>
+        <RadioButton android:id="@+id/leavingRadioButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Leaving"/>
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:text="Once pressing OK, you will be transferred to choose a location on the map. A long press will set the location"
+        android:textSize="16dp"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="5dp"
+        android:textColor="#000000"
+        android:textStyle="bold" />
+
+</LinearLayout>
