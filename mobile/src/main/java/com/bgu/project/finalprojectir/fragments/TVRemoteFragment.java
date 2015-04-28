@@ -227,7 +227,7 @@ public class TVRemoteFragment extends Fragment implements View.OnClickListener, 
         menu.getItem(0).setVisible(false);
     }
 
-    private class TVButtonAction extends RestActionTask {
+    public class TVButtonAction extends RestActionTask {
 
         private String description;
 

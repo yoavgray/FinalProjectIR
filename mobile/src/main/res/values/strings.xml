@@ -47,6 +47,20 @@
         <item>30</item>
     </string-array>
 
+    <string-array name="choices_tv">
+        <item>Power</item>
+        <item>Volume Up</item>
+        <item>Volume Down</item>
+        <item>Channel Up</item>
+        <item>Channel Down</item>
+    </string-array>
+
+    <string-array name="choices_ac">
+        <item>Power</item>
+        <item>Temperature Up</item>
+        <item>Temperature Down</item>
+    </string-array>
+
 <!-- TODO: Remove or change this placeholder text -->
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_google_play_services">Google Play Services</string>

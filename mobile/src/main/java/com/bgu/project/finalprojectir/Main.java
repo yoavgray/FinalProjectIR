@@ -6,9 +6,12 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
+import android.support.v4.app.NotificationCompat.WearableExtender;
+import android.support.v4.app.RemoteInput;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -18,10 +21,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.bgu.project.finalprojectir.classes.Arduino;
 import com.bgu.project.finalprojectir.classes.ArduinoItemAdapter;
+import com.bgu.project.finalprojectir.classes.DeviceType;
 import com.bgu.project.finalprojectir.fragments.AddArduinoFragment;
+import com.bgu.project.finalprojectir.fragments.TVRemoteFragment;
+import com.bgu.project.finalprojectir.tasks.RestActionTask;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +38,7 @@ public class Main extends ActionBarActivity {
     private static final int RESULT_SETTINGS = 1;
     private static final int RESULT_ADD_ARDUINO = 2;
     private static final int RESULT_EDIT_TASK = 3;
+    public static final String EXTRA_VOICE_REPLY = "extra_voice_reply";
 
     FragmentManager fm = getFragmentManager();
 
@@ -49,41 +57,67 @@ public class Main extends ActionBarActivity {
                     .commit();
         }
 
-        // Create a WearableExtender to add functionality for wearables
-        NotificationCompat.WearableExtender wearableExtender =
-                new NotificationCompat.WearableExtender()
-                        .setHintHideIcon(true);
-
-// Create a NotificationCompat.Builder to build a standard notification
-// then extend it with the WearableExtender
-        Notification notif = new NotificationCompat.Builder(this)
-                .setContentTitle("New mail from Yoav")
-                .setContentText("Kaki")
-                .setSmallIcon(R.drawable.omri_icon)
-                .extend(wearableExtender)
-                .build();
-
-
+        Intent starterIntent = getIntent();
+        String starter = starterIntent.getStringExtra("starter");
+        if (starter != null) {
+            Log.d("Main", starter);
+            if (starter.equals("watchTv")) {
+                CharSequence cs = getMessageText(starterIntent);
+                new RestActionTask("Tag","action",Utils.getUriForAction("192.168.1.13:8080/rest","power", DeviceType.TV,"LG")).execute();
+            } else if (starter.equals("watchAc")) {
+                CharSequence cs = getMessageText(starterIntent);
+            } else {
+                Toast.makeText(this, "fresh start", Toast.LENGTH_SHORT).show();
+            }
+        }
 
         // Adding notifications - Eventually for the Watch
         int notificationId = 1;
         // Build intent for notification content
-        Intent viewIntent = new Intent(this, Main.class);
-        PendingIntent viewPendingIntent =
-                PendingIntent.getActivity(this, 0, viewIntent, 0);
+        Intent watchTvIntent = new Intent(this, Main.class).putExtra("starter", "watchTv").setAction("Blah");
+        Intent watchAcIntent = new Intent(this, Main.class).putExtra("starter", "watchAc").setAction("Blah");
+        PendingIntent controlTvPendingIntent =
+                PendingIntent.getActivity(this, 0, watchTvIntent, 0);
+        PendingIntent controlAcPendingIntent =
+                PendingIntent.getActivity(this, 0, watchAcIntent, 0);
+
+        String tvLabel = "Control TV";
+        String acLabel = "Control AC";
+        String[] tvChoices = getResources().getStringArray(R.array.choices_tv);
+        String[] acChoices = getResources().getStringArray(R.array.choices_ac);
+
+        RemoteInput remoteInputTv = new RemoteInput.Builder(EXTRA_VOICE_REPLY)
+                .setLabel(tvLabel)
+                .setChoices(tvChoices)
+                .build();
+
+        RemoteInput remoteInputAc = new RemoteInput.Builder(EXTRA_VOICE_REPLY)
+                .setLabel(acLabel)
+                .setChoices(acChoices)
+                .build();
+
+        // Create the action for when pressing on Control TV
+        NotificationCompat.Action actionTv =
+                new NotificationCompat.Action.Builder(R.drawable.tv_icon,
+                        "Control TV", controlTvPendingIntent)
+                        .addRemoteInput(remoteInputTv)
+                        .build();
+
+        // Create the action for when pressing on Control TV
+        NotificationCompat.Action actionAc =
+                new NotificationCompat.Action.Builder(R.drawable.ac_icon,
+                        "Control AC", controlAcPendingIntent)
+                        .addRemoteInput(remoteInputAc)
+                        .build();
 
         Notification notificationBuilder =
                 new NotificationCompat.Builder(this)
-                        .setSmallIcon(R.drawable.bgu_logo)
+                        .setSmallIcon(R.drawable.ic_launcher)
                         .setLargeIcon(BitmapFactory.decodeResource(
-                                getResources(), R.drawable.yoav_icon))
+                                getResources(), R.drawable.ic_launcher))
                         .setContentTitle("Arduino Detected!")
                         .setContentText("Gray's Arduino")
-                        .setContentIntent(viewPendingIntent)
-                        .addAction(R.drawable.tv_icon,
-                                "Control TV", viewPendingIntent)
-                        .addAction(R.drawable.ac_icon,
-                                "Control AC", viewPendingIntent)
+                        .extend(new WearableExtender().addAction(actionTv).addAction(actionAc))
                         .build();
 
         // Get an instance of the NotificationManager service
@@ -92,7 +126,6 @@ public class Main extends ActionBarActivity {
 
         // Build the notification and issues it with notification manager.
         notificationManager.notify(notificationId, notificationBuilder);
-        notificationManager.notify(2, notif);
     }
 
 
@@ -139,6 +172,14 @@ public class Main extends ActionBarActivity {
                 //mIsPtt = sharedPrefs.getBoolean("ptt_checkbox", true);
                 break;
         }
+    }
+
+    private CharSequence getMessageText(Intent intent) {
+        Bundle remoteInput = RemoteInput.getResultsFromIntent(intent);
+        if (remoteInput != null) {
+            return remoteInput.getCharSequence(EXTRA_VOICE_REPLY);
+        }
+        return null;
     }
 
     /**
