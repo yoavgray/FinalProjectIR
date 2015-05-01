@@ -196,7 +196,7 @@ public class GeofencesActivity extends Activity implements
     //All the parameters are doubles because they suppose to arrive from the map (url is including the device and the action).
     // radius should be at least 100m consider adding validation here or at the dialog.
     private void addNewGeoTask(String url, double latitude, double longitude, float radius) {
-        int transitionType = isEntering == true ? Geofence.GEOFENCE_TRANSITION_ENTER : Geofence.GEOFENCE_TRANSITION_EXIT;
+        int transitionType = isEntering ? Geofence.GEOFENCE_TRANSITION_ENTER : Geofence.GEOFENCE_TRANSITION_EXIT;
         addGeofence(new Geofence.Builder()
                 .setRequestId(url)
                 .setCircularRegion(latitude, longitude, radius)

@@ -58,7 +58,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
 
         Intent i = getIntent();
         url = i.getStringExtra("url");
-        radius = i.getFloatExtra("radius", 100);
+        radius = i.getFloatExtra("radius", 100); //minimum 100m radius (the number is in meters)
         isEntering = i.getBooleanExtra("isEntering", true);
         taskName = i.getStringExtra("taskName");
 
@@ -109,7 +109,6 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         mMap.setOnMapLongClickListener(new GoogleMap.OnMapLongClickListener() {
             @Override
             public void onMapLongClick(LatLng latLng) {
-                //TODO Yoav: get here with real url and radius from the user
                 Intent intent = new Intent(MapsActivity.this ,GeofencesActivity.class)
                         .putExtra("latitude", latLng.latitude)
                         .putExtra("longitude", latLng.longitude)

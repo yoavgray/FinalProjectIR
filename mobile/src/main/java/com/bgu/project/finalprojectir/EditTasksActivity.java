@@ -274,7 +274,7 @@ public class EditTasksActivity extends ActionBarActivity implements ActionBar.Ta
             protected void onPostExecute(ResponseEntity<InfoFromArduino[]> infoFromArduino) {
                 super.onPostExecute(infoFromArduino);
                 for (InfoFromArduino fromArduino : infoFromArduino.getBody()) {
-                    DeviceType deviceType = DeviceType.valueOf(fromArduino.getType());
+                    DeviceType deviceType = DeviceType.fromString(fromArduino.getType());
                     String brand = fromArduino.getBrand();
                     //TODO Boaz: add info getters for this constructor. missing: IP, Leaving/Entering, place description, Action
                     locationTaskData.add(new LocationTask(R.drawable.asi_icon, "127.0.0.3", deviceType, brand, false/*leaving*/, "Work", "VolUp"));
@@ -438,7 +438,7 @@ public class EditTasksActivity extends ActionBarActivity implements ActionBar.Ta
             protected void onPostExecute(ResponseEntity<InfoFromArduino[]> infoFromArduino) {
                 super.onPostExecute(infoFromArduino);
                 for (InfoFromArduino fromArduino : infoFromArduino.getBody()) {
-                    DeviceType deviceType = DeviceType.valueOf(fromArduino.getType());
+                    DeviceType deviceType = DeviceType.fromString(fromArduino.getType());
                     String brand = fromArduino.getBrand();
                     //TODO Boaz: add info getters for this constructor. missing: IP, Time, Action
                     timeTaskData.add(new TimeTask(R.drawable.asi_icon, "127.0.0.3", deviceType, brand, new Date(), new Time(), "VolUp"));

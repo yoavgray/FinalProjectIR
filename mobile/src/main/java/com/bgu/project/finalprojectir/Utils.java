@@ -14,9 +14,11 @@ public class Utils {
 
     public static final String HTTP_PREFIX = "http://";
     public static final String URL_SEPARATOR = "/";
+    public static final String PARAMS = "?params=";
+    public static final String PARAMS_SEPERATOR = "&";
 
     public static URI getURIForAddOrRemoveDevice(String ip, String action, DeviceType deviceType, String brand) {
-        String url = HTTP_PREFIX +ip+ URL_SEPARATOR +action+ URL_SEPARATOR +deviceType+ URL_SEPARATOR +brand;
+        String url = HTTP_PREFIX +ip+ URL_SEPARATOR +action+ PARAMS +deviceType+ PARAMS_SEPERATOR +brand;
         try {
             return new URI(url);
         } catch (URISyntaxException e) {
@@ -83,7 +85,7 @@ public class Utils {
     }
 
     public static URI getUriForAction(String ip, String action, DeviceType deviceType, String brand) {
-        String url = HTTP_PREFIX +ip+ URL_SEPARATOR + deviceType+ URL_SEPARATOR +brand+ URL_SEPARATOR +action;
+        String url = HTTP_PREFIX +ip+ URL_SEPARATOR + deviceType + PARAMS + brand + PARAMS_SEPERATOR +action;
         try {
             return new URI(url);
         } catch (URISyntaxException e) {

@@ -13,7 +13,6 @@ import android.app.Fragment;
 import android.os.PersistableBundle;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.text.format.Time;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -28,7 +27,6 @@ import com.bgu.project.finalprojectir.R;
 import com.bgu.project.finalprojectir.RestJobService;
 import com.bgu.project.finalprojectir.classes.TaskType;
 
-import java.net.URI;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
@@ -117,9 +115,9 @@ public class AddTaskFragment extends DialogFragment {
                         Calendar calendar = GregorianCalendar.getInstance(); // creates a new calendar instance
                         calendar.setTime(date);   // assigns calendar to given date
                         currentHour = calendar.get(Calendar.HOUR_OF_DAY); // gets hour in 24h format
-                        currentMinute = calendar.get(Calendar.MONTH);     // gets month number, NOTE this is zero based!
+                        currentMinute = calendar.get(Calendar.MINUTE);     // gets month number, NOTE this is zero based!
                         delayInMinutes = ((chosenHour - currentHour) * 60) + (chosenMinute - currentMinute);
-                        sampleForNewTimeTask(url,taskNameEditText.getText().toString(),delayInMinutes.toString(), "1");
+                        startNewTimeTask(url,taskNameEditText.getText().toString(),delayInMinutes.toString());
                         break;
                     case LOCATION:
                         EditText radiusEt = (EditText) locationTaskFragment.getView().findViewById(R.id.radiusEditText);
@@ -151,7 +149,7 @@ public class AddTaskFragment extends DialogFragment {
         timeRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO Yoav - get all the parameters for sampleForNewTimeTask method below
+                //TODO Yoav - get all the parameters for startNewTimeTask method below
             }
         });
 
@@ -180,9 +178,8 @@ public class AddTaskFragment extends DialogFragment {
         }
     }
 
-    //TODO Yoav - connect this to the GUI dialog (Tine based Task)
     //All the parameters are string because they suppose to arrive from text fields (url is including the device and the action).
-    private void sampleForNewTimeTask(String url, String description, String delayInMinutes, String deadlineInMinutes){
+    private void startNewTimeTask(String url, String description, String delayInMinutes){
         ComponentName serviceName = new ComponentName(getActivity(), RestJobService.class);
         PersistableBundle persistableBundle = new PersistableBundle();
         persistableBundle.putString("description",description);
@@ -191,7 +188,7 @@ public class AddTaskFragment extends DialogFragment {
                 .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
                 .setExtras(persistableBundle)
                 .setMinimumLatency(Long.valueOf(delayInMinutes) * 1000 * 60)
-                .setOverrideDeadline(Long.valueOf(deadlineInMinutes) * 1000 * 60)
+                .setOverrideDeadline((Long.valueOf(delayInMinutes) * 1000 * 60) + 1)
                 .setPersisted(true)
                 .build();
         JobScheduler scheduler = (JobScheduler) getActivity().getSystemService(Context.JOB_SCHEDULER_SERVICE);

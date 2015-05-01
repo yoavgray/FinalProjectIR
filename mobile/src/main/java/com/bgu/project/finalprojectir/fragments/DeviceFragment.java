@@ -46,7 +46,7 @@ public class DeviceFragment extends Fragment {
     final static int RESULT_ADD_DEVICE = 1;
     final static int RESULT_OK = -1;
     static String ip;
-    public static final boolean useREST = false; // for debug
+    public static final boolean useREST = true; // for debug
 
     public DeviceFragment() {
         // Required empty public constructor
@@ -103,12 +103,6 @@ public class DeviceFragment extends Fragment {
         return rootView;
     }
 
-    private List<Device> getDevicesByIp(String ip) {
-        //TODO Boaz: I need this function to return a List of devices (which is an ArrayList) according to an ip
-        //the constructor needs (int icon, DeviceType title, String brand)
-        return null;
-    }
-
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,
                                     ContextMenu.ContextMenuInfo menuInfo) {
@@ -160,7 +154,7 @@ public class DeviceFragment extends Fragment {
             case RESULT_ADD_DEVICE:
             if (resultCode == RESULT_OK) {
                 // The user added a device
-                DeviceType type =  DeviceType.valueOf(data.getStringExtra("typeResult"));
+                DeviceType type =  DeviceType.fromString(data.getStringExtra("typeResult"));
                 String brand = data.getStringExtra("brandResult");
                 int logo = type.equals(DeviceType.TV) ? R.drawable.tv_icon : R.drawable.ac_icon;
                 Device device = new Device(logo, type, brand);
@@ -201,7 +195,7 @@ public class DeviceFragment extends Fragment {
         protected void onPostExecute(ResponseEntity<InfoFromArduino[]> infoFromArduino) {
             super.onPostExecute(infoFromArduino);
             for (InfoFromArduino fromArduino : infoFromArduino.getBody()) {
-                DeviceType deviceType = DeviceType.valueOf(fromArduino.getType());
+                DeviceType deviceType = DeviceType.fromString(fromArduino.getType());
                 if(deviceType.equals(DeviceType.TV)) {
                     deviceData.add(new Device(R.drawable.tv_icon, deviceType, fromArduino.getBrand()));
                 }else if(deviceType.equals(DeviceType.AC)) {

@@ -37,52 +37,52 @@ public class TVRemoteFragment extends Fragment implements View.OnClickListener, 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.no0ImageButton:
-                new TVButtonAction("zero", "0").execute();
+                new TVButtonAction("0", "0").execute();
                 break;
             case R.id.no1ImageButton:
-                new TVButtonAction("one", "1").execute();
+                new TVButtonAction("1", "1").execute();
                 break;
             case R.id.no2ImageButton:
-                new TVButtonAction("two", "2").execute();
+                new TVButtonAction("2", "2").execute();
                 break;
             case R.id.no3ImageButton:
-                new TVButtonAction("three", "3").execute();
+                new TVButtonAction("3", "3").execute();
                 break;
             case R.id.no4ImageButton:
-                new TVButtonAction("four", "4").execute();
+                new TVButtonAction("4", "4").execute();
                 break;
             case R.id.no5ImageButton:
-                new TVButtonAction("five", "5").execute();
+                new TVButtonAction("5", "5").execute();
                 break;
             case R.id.no6ImageButton:
-                new TVButtonAction("six", "6").execute();
+                new TVButtonAction("6", "6").execute();
                 break;
             case R.id.no7ImageButton:
-                new TVButtonAction("seven", "7").execute();
+                new TVButtonAction("7", "7").execute();
                 break;
             case R.id.no8ImageButton:
-                new TVButtonAction("eight", "8").execute();
+                new TVButtonAction("8", "8").execute();
                 break;
             case R.id.no9ImageButton:
-                new TVButtonAction("nine", "9").execute();
+                new TVButtonAction("9", "9").execute();
                 break;
             case R.id.volumeUpImageButton:
-                new TVButtonAction("vup", "volume up").execute();
+                new TVButtonAction("u", "volume up").execute();
                 break;
             case R.id.volumeDownImageButton:
-                new TVButtonAction("vdown", "volume down").execute();
+                new TVButtonAction("d", "volume down").execute();
                 break;
             case R.id.channelUpImageButton:
-                new TVButtonAction("cup", "channel up").execute();
+                new TVButtonAction("p", "channel up").execute();
                 break;
             case R.id.channelDownImageButton:
-                new TVButtonAction("cdown", "channel down").execute();
+                new TVButtonAction("n", "channel down").execute();
                 break;
             case R.id.muteImageButton:
-                new TVButtonAction("mute", "mute").execute();
+                new TVButtonAction("m", "mute").execute();
                 break;
             case R.id.powerImageButton:
-                new TVButtonAction("power", "power").execute();
+                new TVButtonAction("w", "power").execute();
                 break;
         }
     }
@@ -93,67 +93,67 @@ public class TVRemoteFragment extends Fragment implements View.OnClickListener, 
         String description = null;
         switch (v.getId()) {
             case R.id.no0ImageButton:
-                url = Utils.getUriForAction(ip,"zero",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"0",DeviceType.TV,brand).toString();
                 description = "0";
                 break;
             case R.id.no1ImageButton:
-                url = Utils.getUriForAction(ip,"one",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"1",DeviceType.TV,brand).toString();
                 description = "1";
                 break;
             case R.id.no2ImageButton:
-                url = Utils.getUriForAction(ip,"two",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"2",DeviceType.TV,brand).toString();
                 description = "2";
                 break;
             case R.id.no3ImageButton:
-                url = Utils.getUriForAction(ip,"three",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"3",DeviceType.TV,brand).toString();
                 description = "3";
                 break;
             case R.id.no4ImageButton:
-                url = Utils.getUriForAction(ip,"four",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"4",DeviceType.TV,brand).toString();
                 description = "4";
                 break;
             case R.id.no5ImageButton:
-                url = Utils.getUriForAction(ip,"five",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"5",DeviceType.TV,brand).toString();
                 description = "5";
                 break;
             case R.id.no6ImageButton:
-                url = Utils.getUriForAction(ip,"six",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"6",DeviceType.TV,brand).toString();
                 description = "6";
                 break;
             case R.id.no7ImageButton:
-                url = Utils.getUriForAction(ip,"seven",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"7",DeviceType.TV,brand).toString();
                 description = "7";
                 break;
             case R.id.no8ImageButton:
-                url = Utils.getUriForAction(ip,"eight",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"8",DeviceType.TV,brand).toString();
                 description = "8";
                 break;
             case R.id.no9ImageButton:
-                url = Utils.getUriForAction(ip,"nine",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"9",DeviceType.TV,brand).toString();
                 description = "9";
                 break;
             case R.id.volumeUpImageButton:
-                url = Utils.getUriForAction(ip,"vup",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"u",DeviceType.TV,brand).toString();
                 description = "volume up";
                 break;
             case R.id.volumeDownImageButton:
-                url = Utils.getUriForAction(ip,"vdown",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"d",DeviceType.TV,brand).toString();
                 description = "volume down";
                 break;
             case R.id.channelUpImageButton:
-                url = Utils.getUriForAction(ip,"cup",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"p",DeviceType.TV,brand).toString();
                 description = "channel up";
                 break;
             case R.id.channelDownImageButton:
-                url = Utils.getUriForAction(ip,"cdown",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"n",DeviceType.TV,brand).toString();
                 description = "channel down";
                 break;
             case R.id.muteImageButton:
-                url = Utils.getUriForAction(ip,"mute",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"m",DeviceType.TV,brand).toString();
                 description = "mute";
                 break;
             case R.id.powerImageButton:
-                url = Utils.getUriForAction(ip,"power",DeviceType.TV,brand).toString();
+                url = Utils.getUriForAction(ip,"w",DeviceType.TV,brand).toString();
                 description = "power";
                 break;
         }

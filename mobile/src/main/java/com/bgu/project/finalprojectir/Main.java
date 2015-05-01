@@ -6,7 +6,6 @@ import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.NotificationManagerCompat;
@@ -27,7 +26,6 @@ import com.bgu.project.finalprojectir.classes.Arduino;
 import com.bgu.project.finalprojectir.classes.ArduinoItemAdapter;
 import com.bgu.project.finalprojectir.classes.DeviceType;
 import com.bgu.project.finalprojectir.fragments.AddArduinoFragment;
-import com.bgu.project.finalprojectir.fragments.TVRemoteFragment;
 import com.bgu.project.finalprojectir.tasks.RestActionTask;
 
 import java.util.ArrayList;
@@ -63,7 +61,7 @@ public class Main extends ActionBarActivity {
             Log.d("Main", starter);
             if (starter.equals("watchTv")) {
                 CharSequence cs = getMessageText(starterIntent);
-                new RestActionTask("Tag","action",Utils.getUriForAction("192.168.1.13:8080/rest","power", DeviceType.TV,"LG")).execute();
+                new RestActionTask("Tag","action power",Utils.getUriForAction("192.168.1.13:8080/rest","w", DeviceType.TV,"LG")).execute();
             } else if (starter.equals("watchAc")) {
                 CharSequence cs = getMessageText(starterIntent);
             } else {
@@ -215,7 +213,7 @@ public class Main extends ActionBarActivity {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
             itemDataList = new ArrayList<>();
-            itemDataList.add(new Arduino(R.drawable.boaz_icon, "Buzi's Arduino", "192.168.1.13:8080/rest"));
+            itemDataList.add(new Arduino(R.drawable.boaz_icon, "Buzi's Arduino", "10.100.102.6:8080/rest"));
             itemDataList.add(new Arduino(R.drawable.yoav_icon, "Gray's Arduino", "127.0.0.2"));
             itemDataList.add(new Arduino(R.drawable.asi_icon, "Asi's Arduino", "127.0.0.3"));
             itemDataList.add(new Arduino(R.drawable.omri_icon, "Havivian's Arduino", "127.0.0.4"));
