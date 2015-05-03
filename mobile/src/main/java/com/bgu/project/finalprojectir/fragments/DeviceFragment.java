@@ -194,15 +194,17 @@ public class DeviceFragment extends Fragment {
         @Override
         protected void onPostExecute(ResponseEntity<InfoFromArduino[]> infoFromArduino) {
             super.onPostExecute(infoFromArduino);
-            for (InfoFromArduino fromArduino : infoFromArduino.getBody()) {
-                DeviceType deviceType = DeviceType.fromString(fromArduino.getType());
-                if(deviceType.equals(DeviceType.TV)) {
-                    deviceData.add(new Device(R.drawable.tv_icon, deviceType, fromArduino.getBrand()));
-                }else if(deviceType.equals(DeviceType.AC)) {
-                    deviceData.add(new Device(R.drawable.ac_icon, deviceType, fromArduino.getBrand()));
+            if (infoFromArduino != null) {
+                for (InfoFromArduino fromArduino : infoFromArduino.getBody()) {
+                    DeviceType deviceType = DeviceType.fromString(fromArduino.getType());
+                    if (deviceType.equals(DeviceType.TV)) {
+                        deviceData.add(new Device(R.drawable.tv_icon, deviceType, fromArduino.getBrand()));
+                    } else if (deviceType.equals(DeviceType.AC)) {
+                        deviceData.add(new Device(R.drawable.ac_icon, deviceType, fromArduino.getBrand()));
+                    }
                 }
+                adapter.notifyDataSetChanged();
             }
-            adapter.notifyDataSetChanged();
         }
     }
 
