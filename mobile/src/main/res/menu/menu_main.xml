@@ -10,5 +10,7 @@
         app:showAsAction="always" />
     <item android:id="@+id/edit_tasks"
         android:title="@string/action_edit_tasks"
+        android:orderInCategory="2" app:showAsAction="never" />
+    <item android:id="@+id/action_logout" android:title="@string/action_logout"
         android:orderInCategory="1" app:showAsAction="never" />
 </menu>

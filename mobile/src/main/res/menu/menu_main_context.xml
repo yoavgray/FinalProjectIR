@@ -1,0 +1,9 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.bgu.project.finalprojectir.Main" >
+
+    <item
+        android:id="@+id/remove_arduino"
+        android:title="Remove Arduino"
+        android:text="Remove Arduino"/>
+</menu>

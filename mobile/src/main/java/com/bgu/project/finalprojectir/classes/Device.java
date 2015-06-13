@@ -10,7 +10,7 @@ public class Device extends ListItem {
     public Device(int icon, DeviceType title, String brand) {
         super(icon, String.valueOf(title));
         this.deviceType = title;
-        this.brand = brand;
+        this.brand = brand.toUpperCase();
     }
 
     public String getBrand() {

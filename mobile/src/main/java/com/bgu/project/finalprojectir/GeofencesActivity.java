@@ -19,7 +19,6 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingRequest;
 import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.plus.Plus;
 
 import java.util.ArrayList;
 
@@ -57,6 +56,7 @@ public class GeofencesActivity extends Activity implements
     private double longitude;
     private float radius;
     private String taskName;
+    private String taskDevice;
     private boolean isEntering;
 
     /**
@@ -75,6 +75,7 @@ public class GeofencesActivity extends Activity implements
             radius = i.getFloatExtra("radius", 100);
             taskName = i.getStringExtra("taskName");
             isEntering = i.getBooleanExtra("isEntering", true);
+            taskDevice = i.getStringExtra("taskDevice");
         }
     }
 
@@ -198,7 +199,7 @@ public class GeofencesActivity extends Activity implements
     private void addNewGeoTask(String url, double latitude, double longitude, float radius) {
         int transitionType = isEntering ? Geofence.GEOFENCE_TRANSITION_ENTER : Geofence.GEOFENCE_TRANSITION_EXIT;
         addGeofence(new Geofence.Builder()
-                .setRequestId(url)
+                .setRequestId(url + ";" + taskName + ";" + taskDevice)
                 .setCircularRegion(latitude, longitude, radius)
                 .setExpirationDuration(GEOFENCE_EXPIRATION_IN_MILLISECONDS)
                 .setTransitionTypes(transitionType)

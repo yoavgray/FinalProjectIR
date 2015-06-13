@@ -14,6 +14,10 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.Geofence;
 import com.google.android.gms.location.GeofencingEvent;
 import com.google.android.gms.location.LocationServices;
+import com.parse.FindCallback;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -63,15 +67,34 @@ public class GeofenceIntentService extends IntentService implements ResultCallba
                 List<String> geofenceToDelete= new ArrayList<>();
                 for (Geofence triggeringGeofence : triggeringGeofences) {
                     try {
-                        new RestActionTask(TAG, "geofences action", new URI(triggeringGeofence.getRequestId())).execute();
+                        String[] tmpString = triggeringGeofence.getRequestId().split(";");
+                        new RestActionTask(TAG, "geofences action", new URI(tmpString[0])).execute();
 
                         geofenceToDelete.add(triggeringGeofence.getRequestId());
 
+                        int taskTypeIcon = tmpString[2].equals("ac") ? R.drawable.ac_icon : R.drawable.tv_icon;
                         Notification n = new Notification.Builder(this)
                                 .setContentTitle("Geo Task Executed")
-                                .setContentText(triggeringGeofence.getRequestId())
-                                .setSmallIcon(R.drawable.ac_icon)
+                                .setContentText("name:" + tmpString[1] + " ip: " + tmpString[0])
+                                .setSmallIcon(taskTypeIcon)
                                 .build();
+
+                        ParseQuery<ParseObject> query = ParseQuery.getQuery("ParseTask");
+                        query.whereEqualTo("user", ParseUser.getCurrentUser());
+                        query.whereEqualTo("title", tmpString[1]);
+                        query.findInBackground(new FindCallback<ParseObject>() {
+                            @Override
+                            public void done(List<ParseObject> parseObjects, com.parse.ParseException e) {
+                                if (e == null) {
+                                    for (ParseObject i:parseObjects) {
+                                        i.deleteInBackground();
+                                    }
+                                } else {
+                                    Log.d("score", "Error: " + e.getMessage());
+                                }
+                            }
+                        });
+
 
                         notificationManager.notify(notificationCounter, n);
                         notificationCounter++;

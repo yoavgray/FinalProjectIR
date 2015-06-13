@@ -157,7 +157,7 @@ public class TVRemoteFragment extends Fragment implements View.OnClickListener, 
                 description = "power";
                 break;
         }
-        DialogFragment newFragment = AddTaskFragment.newInstance(url, description);
+        DialogFragment newFragment = AddTaskFragment.newInstance(url, description, DeviceType.TV);
         newFragment.show(getFragmentManager(), "dialog");
         return true;
     }

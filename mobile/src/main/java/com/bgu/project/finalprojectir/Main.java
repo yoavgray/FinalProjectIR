@@ -1,9 +1,11 @@
 package com.bgu.project.finalprojectir;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.app.Fragment;
 import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -13,24 +15,24 @@ import android.support.v4.app.NotificationCompat.WearableExtender;
 import android.support.v4.app.RemoteInput;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bgu.project.finalprojectir.classes.Arduino;
-import com.bgu.project.finalprojectir.classes.ArduinoItemAdapter;
+import com.bgu.project.finalprojectir.classes.ArduinoParseAdapter;
 import com.bgu.project.finalprojectir.classes.DeviceType;
+import com.bgu.project.finalprojectir.classes.ParseArduino;
 import com.bgu.project.finalprojectir.fragments.AddArduinoFragment;
 import com.bgu.project.finalprojectir.tasks.RestActionTask;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import com.parse.ParseUser;
 
 public class Main extends ActionBarActivity {
     private static final int RESULT_SETTINGS = 1;
@@ -40,8 +42,7 @@ public class Main extends ActionBarActivity {
 
     FragmentManager fm = getFragmentManager();
 
-    static ArduinoItemAdapter adapter;
-    static List<Arduino> itemDataList;
+    static ArduinoParseAdapter adapter;
     static PlaceholderFragment mainFragment;
 
     @Override
@@ -60,10 +61,11 @@ public class Main extends ActionBarActivity {
         if (starter != null) {
             Log.d("Main", starter);
             if (starter.equals("watchTv")) {
-                CharSequence cs = getMessageText(starterIntent);
-                new RestActionTask("Tag","action power",Utils.getUriForAction("192.168.1.13:8080/rest","w", DeviceType.TV,"LG")).execute();
+                String cs = getMessageText(starterIntent).toString().toLowerCase();
+                ReceiveActionFromWatch(DeviceType.TV, cs);
             } else if (starter.equals("watchAc")) {
-                CharSequence cs = getMessageText(starterIntent);
+                String cs = getMessageText(starterIntent).toString().toLowerCase();
+                ReceiveActionFromWatch(DeviceType.TV, cs);
             } else {
                 Toast.makeText(this, "fresh start", Toast.LENGTH_SHORT).show();
             }
@@ -126,6 +128,32 @@ public class Main extends ActionBarActivity {
         notificationManager.notify(notificationId, notificationBuilder);
     }
 
+    private void ReceiveActionFromWatch(DeviceType deviceType, String action) {
+
+        switch (deviceType) {
+            case AC:
+                break;
+            case TV:
+                if (action.equals("power") || action.equals("turn tv on") || action.equals("turn tv off") || action.equals("turn television on") || action.equals("turn television off")) {
+                    new RestActionTask("Watch", "power", Utils.getUriForAction("132.72.48.46", "w", DeviceType.TV, "LG")).execute();
+                    Toast.makeText(this, "Received 'Power' command from watch!", Toast.LENGTH_SHORT).show();
+                } else if (action.equals("turn volume up") || action.equals("turn the volume up") || action.equals("volume up") || action.equals("turn up the volume")) {
+                    new RestActionTask("Watch", "volume up", Utils.getUriForAction("132.72.48.46", "u", DeviceType.TV, "LG")).execute();
+                    Toast.makeText(this, "Received 'Volume Up' command from watch!", Toast.LENGTH_SHORT).show();
+                } else if (action.equals("turn volume down") || action.equals("turn the volume down") || action.equals("volume down") || action.equals("turn down the volume")) {
+                    new RestActionTask("Watch", "volume down", Utils.getUriForAction("132.72.48.46", "d", DeviceType.TV, "LG")).execute();
+                    Toast.makeText(this, "Received 'Volume Down' command from watch!", Toast.LENGTH_SHORT).show();
+                } else if (action.equals("channel up")) {
+                    new RestActionTask("Watch", "channel up", Utils.getUriForAction("132.72.48.46", "p", DeviceType.TV, "LG")).execute();
+                    Toast.makeText(this, "Received 'Channel Up' command from watch!", Toast.LENGTH_SHORT).show();
+                } else if (action.equals("channel down")) {
+                    new RestActionTask("Watch", "channel down", Utils.getUriForAction("132.72.48.46", "n", DeviceType.TV, "LG")).execute();
+                    Toast.makeText(this, "Received 'Channel Down' command from watch!", Toast.LENGTH_SHORT).show();
+                }
+                break;
+        }
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -146,6 +174,12 @@ public class Main extends ActionBarActivity {
                 aaFragment.setTargetFragment(mainFragment, RESULT_ADD_ARDUINO);
                 aaFragment.show(fm, "Dialog Fragment");
                 return true;
+            case R.id.action_logout:
+                ParseUser.logOut();
+                Intent i = new Intent(this, LoginSignupActivity.class);
+                i.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+                return true;
             case R.id.action_settings:
                 startActivityForResult(new Intent(this, SettingsActivity.class),
                         RESULT_SETTINGS);
@@ -161,8 +195,7 @@ public class Main extends ActionBarActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        //super.onActivityResult(requestCode, resultCode, data);
-        Log.d("msg","" + requestCode);
+        Log.d("msg", "" + requestCode);
         switch (requestCode) {
             case RESULT_SETTINGS:
                 //SharedPreferences sharedPrefs = PreferenceManager
@@ -194,11 +227,7 @@ public class Main extends ActionBarActivity {
             switch (requestCode) {
                 case RESULT_ADD_ARDUINO:
                     if (resultCode == RESULT_OK) {
-                        // The user added a device
-                        String name = data.getStringExtra("nameResult");
-                        String ip = data.getStringExtra("ipResult");
-                        itemDataList.add(new Arduino(R.drawable.bgu_logo, name, ip));
-                        adapter.notifyDataSetChanged();
+                        adapter.loadObjects();
                     }
                     break;
                 case RESULT_EDIT_TASK:
@@ -212,14 +241,11 @@ public class Main extends ActionBarActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
-            itemDataList = new ArrayList<>();
-            itemDataList.add(new Arduino(R.drawable.boaz_icon, "Buzi's Arduino", "10.100.102.6:8080/rest"));
-            itemDataList.add(new Arduino(R.drawable.yoav_icon, "Gray's Arduino", "127.0.0.2"));
-            itemDataList.add(new Arduino(R.drawable.asi_icon, "Asi's Arduino", "127.0.0.3"));
-            itemDataList.add(new Arduino(R.drawable.omri_icon, "Havivian's Arduino", "127.0.0.4"));
+            String userName = ParseUser.getCurrentUser().getUsername();
+            TextView helloUserTextView = (TextView) rootView.findViewById(R.id.helloUserTextView);
+            helloUserTextView.setText("Hello " + userName + ", please choose an Arduino to controll");
 
-            adapter = new ArduinoItemAdapter(getActivity(),
-                    R.layout.list_item_row, itemDataList);
+            adapter = new ArduinoParseAdapter(getActivity());
 
             final ListView listView = (ListView) rootView
                     .findViewById(R.id.devicesListView);
@@ -231,10 +257,9 @@ public class Main extends ActionBarActivity {
                                         long arg3) {
                     Intent intent = new Intent(getActivity(),
                             DeviceActivity.class)
-                            .putExtra("deviceName", itemDataList.get(pos).getTitle())
-                            .putExtra("deviceIp", itemDataList.get(pos).getIp());
+                            .putExtra("deviceName", adapter.getItem(pos).getTitle())
+                            .putExtra("deviceIp", adapter.getItem(pos).getIp());
                     startActivity(intent);
-
                 }
             });
 
@@ -242,4 +267,46 @@ public class Main extends ActionBarActivity {
         }
     }
 
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v,
+                                    ContextMenu.ContextMenuInfo menuInfo) {
+        super.onCreateContextMenu(menu, v, menuInfo);
+        MenuInflater inflater = this.getMenuInflater();
+        inflater.inflate(R.menu.menu_main_context, menu);
+    }
+
+    @Override
+    //What happens when you press long on a list item
+    public boolean onContextItemSelected(MenuItem item) {
+        final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item
+                .getMenuInfo();
+        switch (item.getItemId()) {
+            case R.id.remove_arduino:
+                Log.d("Hey!", "Remove Device!");
+                new AlertDialog.Builder(this)
+                .setTitle("Warning")
+                    .setMessage("Are you sure you want to remove arduino?")
+                    .setPositiveButton("Ok",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    ParseArduino arduinoToDelete = adapter.getItem(info.position);
+                                    arduinoToDelete.deleteInBackground();
+                                    adapter.loadObjects();
+                                }
+                            })
+                    .setNegativeButton("Cancel",
+                            new DialogInterface.OnClickListener() {
+                                public void onClick(DialogInterface dialog,
+                                                    int whichButton) {
+                                    Toast.makeText(getApplicationContext(),
+                                            "Coward..",
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                            }).show();
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+        }
+    }
 }

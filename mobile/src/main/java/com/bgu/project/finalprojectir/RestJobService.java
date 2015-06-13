@@ -12,9 +12,14 @@ import android.os.PersistableBundle;
 import android.util.Log;
 
 import com.bgu.project.finalprojectir.tasks.RestActionTask;
+import com.parse.FindCallback;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
+import com.parse.ParseUser;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 /**
  * Created by Boaz on 10/04/2015.
@@ -38,16 +43,33 @@ public class RestJobService extends JobService {
         restActionTask.execute();
 
         // build notification
+        int taskIcon = extras.getString("deviceType").equals("tv") ? R.drawable.tv_icon : R.drawable.ac_icon;
         Notification n  = new Notification.Builder(this)
                 .setContentTitle("Time Task Executed")
                 .setContentText(description)
-                .setSmallIcon(R.drawable.ac_icon)
+                .setSmallIcon(taskIcon)
                 .build();
 
         NotificationManager notificationManager =
                 (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
 
         notificationManager.notify(0, n);
+
+        ParseQuery<ParseObject> query = ParseQuery.getQuery("ParseTask");
+        query.whereEqualTo("user", ParseUser.getCurrentUser());
+        query.whereEqualTo("title", description);
+        query.findInBackground(new FindCallback<ParseObject>() {
+            @Override
+            public void done(List<ParseObject> parseObjects, com.parse.ParseException e) {
+                if (e == null) {
+                    for (ParseObject i:parseObjects) {
+                        i.deleteInBackground();
+                    }
+                } else {
+                    Log.d("score", "Error: " + e.getMessage());
+                }
+            }
+        });
 
         return true;
     }

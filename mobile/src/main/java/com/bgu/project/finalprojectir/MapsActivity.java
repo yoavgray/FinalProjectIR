@@ -30,6 +30,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
     private float radius;
     private String url;
     private String taskName;
+    private String taskDevice;
 
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
 
@@ -61,6 +62,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
         radius = i.getFloatExtra("radius", 100); //minimum 100m radius (the number is in meters)
         isEntering = i.getBooleanExtra("isEntering", true);
         taskName = i.getStringExtra("taskName");
+        taskDevice = i.getStringExtra("device");
 
         setContentView(R.layout.activity_maps);
     }
@@ -115,6 +117,7 @@ public class MapsActivity extends FragmentActivity implements GoogleApiClient.Co
                         .putExtra("url", url)
                         .putExtra("entering", isEntering)
                         .putExtra("taskName", taskName)
+                        .putExtra("taskDevice", taskDevice)
                         .putExtra("radius", radius);//minimum 100m radius (the number is in meters)
                 startActivity(intent);
             }

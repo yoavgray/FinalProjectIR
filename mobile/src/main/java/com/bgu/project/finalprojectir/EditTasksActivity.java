@@ -29,12 +29,11 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.bgu.project.finalprojectir.classes.Device;
 import com.bgu.project.finalprojectir.classes.DeviceType;
-import com.bgu.project.finalprojectir.classes.LocationTask;
+import com.bgu.project.finalprojectir.classes.ParseTask;
 import com.bgu.project.finalprojectir.classes.Task;
-import com.bgu.project.finalprojectir.classes.TaskItemAdapter;
-import com.bgu.project.finalprojectir.classes.TimeTask;
+import com.bgu.project.finalprojectir.classes.TimeTaskParseAdapter;
+import com.bgu.project.finalprojectir.classes.LocationTaskParseAdapter;
 import com.bgu.project.finalprojectir.fragments.DeviceFragment;
 import com.bgu.project.finalprojectir.tasks.AbstractRestTask;
 import com.bgu.project.finalprojectir.tasks.RestActionTask;
@@ -161,9 +160,8 @@ public class EditTasksActivity extends ActionBarActivity implements ActionBar.Ta
      * A Location Tasks Fragment.
      */
     public static class LocationTasksFragment extends Fragment {
-        static TaskItemAdapter adapter;
-        static List<Task> locationTaskData;
-        public static final String TAG = "TimeTasksFragment";
+        static LocationTaskParseAdapter locationTaskAdapter;
+        public static final String TAG = "LocationTasksFragment";
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -181,22 +179,11 @@ public class EditTasksActivity extends ActionBarActivity implements ActionBar.Ta
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.layout_list_of_location_tasks, container, false);
 
-            locationTaskData = new ArrayList<>();
-            if (!useREST) {
-                locationTaskData.add(new LocationTask(R.drawable.boaz_icon, "127.0.0.1", DeviceType.TV, "Sony", true, "Home", "mute"));
-                locationTaskData.add(new LocationTask(R.drawable.yoav_icon, "127.0.0.2", DeviceType.AC, "Tadiran", false, "Work", "Power"));
-            } else {
-                GetLocationTasks getLocTasks = new GetLocationTasks();
-                getLocTasks.execute((Void) null);
-            }
-
-            adapter = new TaskItemAdapter(getActivity(),
-                    R.layout.list_item_row, locationTaskData);
+            locationTaskAdapter = new LocationTaskParseAdapter(getActivity());
 
             final ListView listView = (ListView) rootView
                     .findViewById(R.id.locationTasksListView);
-            listView.setAdapter(adapter);
-            //need this for the long press on the list
+            listView.setAdapter(locationTaskAdapter);
             registerForContextMenu(listView);
 
             return rootView;
@@ -224,10 +211,9 @@ public class EditTasksActivity extends ActionBarActivity implements ActionBar.Ta
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog,
                                                             int whichButton) {
-                                            Task remove = locationTaskData.remove(info.position);
-                                            removeLocationTask(remove);
-                                            adapter.notifyDataSetChanged();
-
+                                            ParseTask pt = locationTaskAdapter.getItem(info.position);
+                                            pt.deleteInBackground();
+                                            locationTaskAdapter.loadObjects();
                                         }
                                     })
                             .setNegativeButton("Cancel",
@@ -277,9 +263,9 @@ public class EditTasksActivity extends ActionBarActivity implements ActionBar.Ta
                     DeviceType deviceType = DeviceType.fromString(fromArduino.getType());
                     String brand = fromArduino.getBrand();
                     //TODO Boaz: add info getters for this constructor. missing: IP, Leaving/Entering, place description, Action
-                    locationTaskData.add(new LocationTask(R.drawable.asi_icon, "127.0.0.3", deviceType, brand, false/*leaving*/, "Work", "VolUp"));
+                    //locationTaskData.add(new LocationTask(R.drawable.asi_icon, "127.0.0.3", deviceType, brand, false/*leaving*/, "Work", "VolUp"));
                 }
-                adapter.notifyDataSetChanged();
+                locationTaskAdapter.notifyDataSetChanged();
             }
         }
 
@@ -308,7 +294,7 @@ public class EditTasksActivity extends ActionBarActivity implements ActionBar.Ta
             @Override
             protected void onPostExecute(String infoFromArduino) {
                 super.onPostExecute(infoFromArduino);
-                adapter.notifyDataSetChanged();
+                locationTaskAdapter.notifyDataSetChanged();
                 if(useREST) {
                     Toast.makeText(getActivity(), "Response "+infoFromArduino, Toast.LENGTH_SHORT).show();
                 }else{
@@ -324,8 +310,7 @@ public class EditTasksActivity extends ActionBarActivity implements ActionBar.Ta
      * A Location Tasks Fragment.
      */
     public static class TimeTasksFragment extends Fragment {
-        static TaskItemAdapter adapter;
-        static List<Task> timeTaskData;
+        static TimeTaskParseAdapter timeTaskAdapter;
         public static final String TAG = "TimeTasksFragment";
 
         /**
@@ -344,22 +329,11 @@ public class EditTasksActivity extends ActionBarActivity implements ActionBar.Ta
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.layout_list_of_time_tasks, container, false);
 
-            timeTaskData = new ArrayList<>();
-            if (!useREST) {
-                timeTaskData.add(new TimeTask(R.drawable.boaz_icon, "127.0.0.1", DeviceType.TV, "LG", new Date(), new Time(), "mute"));
-                timeTaskData.add(new TimeTask(R.drawable.yoav_icon, "127.0.0.2", DeviceType.AC, "Tadiran", new Date(), new Time(), "Power"));
-                timeTaskData.add(new TimeTask(R.drawable.asi_icon, "127.0.0.3", DeviceType.TV, "Sony", new Date(), new Time(), "VolUp"));
-            } else {
-                GetTimeTasks getTimeTasks = new GetTimeTasks();
-                getTimeTasks.execute((Void) null);
-            }
-
-            adapter = new TaskItemAdapter(getActivity(),
-                    R.layout.list_item_row, timeTaskData);
+            timeTaskAdapter = new TimeTaskParseAdapter(getActivity());
 
             final ListView listView = (ListView) rootView
                     .findViewById(R.id.timeTasksListView);
-            listView.setAdapter(adapter);
+            listView.setAdapter(timeTaskAdapter);
             //need this for the long press on the list
             registerForContextMenu(listView);
 
@@ -388,10 +362,10 @@ public class EditTasksActivity extends ActionBarActivity implements ActionBar.Ta
                                     new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog,
                                                             int whichButton) {
-                                            Task remove = timeTaskData.remove(info.position);
-                                            removeTimeTask(remove);
-                                            adapter.notifyDataSetChanged();
+                                            ParseTask pt = timeTaskAdapter.getItem(info.position);
+                                            pt.deleteInBackground();
 
+                                            timeTaskAdapter.loadObjects();
                                         }
                                     })
                             .setNegativeButton("Cancel",
@@ -441,9 +415,9 @@ public class EditTasksActivity extends ActionBarActivity implements ActionBar.Ta
                     DeviceType deviceType = DeviceType.fromString(fromArduino.getType());
                     String brand = fromArduino.getBrand();
                     //TODO Boaz: add info getters for this constructor. missing: IP, Time, Action
-                    timeTaskData.add(new TimeTask(R.drawable.asi_icon, "127.0.0.3", deviceType, brand, new Date(), new Time(), "VolUp"));
+                    //timeTaskData.add(new TimeTask(R.drawable.asi_icon, "127.0.0.3", deviceType, brand, new Date(), new Time(), "VolUp"));
                 }
-                adapter.notifyDataSetChanged();
+                timeTaskAdapter.notifyDataSetChanged();
             }
         }
 
@@ -472,7 +446,7 @@ public class EditTasksActivity extends ActionBarActivity implements ActionBar.Ta
             @Override
             protected void onPostExecute(String infoFromArduino) {
                 super.onPostExecute(infoFromArduino);
-                adapter.notifyDataSetChanged();
+                timeTaskAdapter.notifyDataSetChanged();
                 if(useREST) {
                     Toast.makeText(getActivity(), "Response "+infoFromArduino, Toast.LENGTH_SHORT).show();
                 }else{
