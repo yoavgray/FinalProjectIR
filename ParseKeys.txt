@@ -1,0 +1,4 @@
+Application ID: jjM5NNmAjfxLDFvJxsqa0MnJ4rtghHHTvGjuXshX
+Client Key: PfMtyx7w4qYm8jfayBqZnBLBl5qnwfyxr3uOYERM
+Rest API Key:FKdZpFwAuYuJcSTNNcl3tYDvxm1XzJbNUYfPcUmV
+Master Key: mHfR06vEFi7fWjt1j5GVbBZgO9Zw7FhcXimRgM78
